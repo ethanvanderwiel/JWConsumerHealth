@@ -9,7 +9,7 @@ catchError {
         }
         stage("Staging Deploy") {
             node("agent") {
-                git url: "https://github.com/Banno/symxchange-api.git"
+                git url: "https://github.com/Banno/template-service.git"
                 sh "git checkout ${releasedVersion}"
                 dir("deployment/marathon"){
                     sh "./update-marathon.sh staging https://marathon.staging-2.banno-internal.com"
@@ -19,7 +19,7 @@ catchError {
 
         stage("UAT Deploy") {
             node("agent") {
-                git url: "https://github.com/Banno/symxchange-api.git"
+                git url: "https://github.com/Banno/template-service.git"
                 sh "git checkout ${releasedVersion}"
                 dir("deployment/marathon") {
                     sh "./update-marathon.sh uat https://marathon.uat-2.banno-internal.com"
@@ -44,7 +44,7 @@ def checkoutSbtAndBuild(Map build) {
 
     node("agent") {
         if (env.BRANCH_NAME == "master") {
-            git url: "https://github.com/Banno/symxchange-api.git", branch: "master", changelog: true
+            git url: "https://github.com/Banno/template-service.git", branch: "master", changelog: true
         } else {
             checkout scm
         }
