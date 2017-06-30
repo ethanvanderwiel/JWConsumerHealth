@@ -50,7 +50,7 @@ def checkoutSbtAndBuild(Map build) {
         }
         
         def sbtHome = tool("sbt 0.13.13")
-        sh “git clean -ffdx”
+        sh "git clean -ffdx"
 
         wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm']) {
             timeout(time: 20, unit: 'MINUTES') {
