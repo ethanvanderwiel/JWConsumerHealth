@@ -29,8 +29,6 @@ object Main extends ServerApp {
       _  <- printOutStarted
     } yield b
 
-
-
   val services = PingRoute.pingRouteService
 
   def startBlazeServer(config: HttpConfig): Task[Server] = BlazeBuilder
