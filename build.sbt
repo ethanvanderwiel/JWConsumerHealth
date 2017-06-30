@@ -29,7 +29,7 @@ libraryDependencies ++= Seq(
   "com.banno"    %% "banno-health"          % bannoScalaLibrariesVersion,
   "com.banno"    %% "scala-vault-api"       % bannoVaultScalaApiVersion,
   "com.chuusai"  %% "shapeless"             % shapelessVersion,
-  "com.github.pureconfig" %% "pureconfig"   % pureConfigVersion
+  "com.github.pureconfig" %% "pureconfig"   % pureConfigVersion,
   "org.http4s"   %% "http4s-argonaut"       % http4sVersion,
   "org.http4s"   %% "http4s-blaze-server"   % http4sVersion,
   "org.http4s"   %% "http4s-dsl"            % http4sVersion,
@@ -43,7 +43,7 @@ libraryDependencies ++= Seq(
   "org.scalaz"   %% "scalaz-concurrent"     % scalazVersion,
   "org.scalaz"   %% "scalaz-core"           % scalazVersion,
   "org.specs2"   %% "specs2-core"           % specs2Version % Test,
-  "org.specs2"   %% "specs2-scalaz"         % specs2Version % Test,
+  "org.specs2"   %% "specs2-scalaz"         % specs2Version % Test
 )
 
 bannoReleaseGitPushOnlyTag := true
