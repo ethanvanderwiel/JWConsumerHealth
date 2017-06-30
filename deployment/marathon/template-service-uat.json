@@ -1,0 +1,80 @@
+{
+  "id": "template-service",
+  "healthChecks": [
+    {
+      "path": "/health",
+      "portIndex": 0,
+      "protocol": "HTTP",
+      "gracePeriodSeconds": 300,
+      "intervalSeconds": 60,
+      "timeoutSeconds": 20,
+      "maxConsecutiveFailures": 3,
+      "ignoreHttp1xx": false
+    },
+    {
+      "path": "/ping",
+      "portIndex": 1,
+      "protocol": "HTTP",
+      "gracePeriodSeconds": 300,
+      "intervalSeconds": 60,
+      "timeoutSeconds": 20,
+      "maxConsecutiveFailures": 3,
+      "ignoreHttp1xx": false
+    }
+  ],
+  "readinessChecks": [
+    {
+      "name": "http",
+      "path": "/ping",
+      "portName": "http",
+      "protocol": "HTTP",
+      "httpStatusCodesForReady": [ 200 ]
+    }
+  ],
+  "portDefinitions": [
+    {
+      "port": 0,
+      "name": "health"
+    },
+    {
+      "port": 0,
+      "name": "http"
+    }
+  ],
+  "upgradeStrategy": {
+    "maximumOverCapacity": 0.5,
+    "minimumHealthCapacity": 0.5
+  },
+  "container": {
+    "docker": {
+      "image": "registry.banno-internal.com/template-service:1-SNAPSHOT"
+    },
+    "type": "DOCKER"
+  },
+  "cpus": 0.1,
+  "mem": 512,
+  "instances": 2,
+  "acceptedResourceRoles": [
+    "*"
+  ],
+  "constraints": [
+    [
+      "hostname",
+      "UNIQUE"
+    ]
+  ],
+  "env": {
+    "ZOOKEEPER_QUORUM": "zookeeper0-lks.uat-2.banno-internal.com,zookeeper1-lks.uat-2.banno-internal.com,zookeeper2-lks.uat-2.banno-internal.com",
+    "ZOOKEEPER_ENABLED": "true",
+    "BANNO_HEALTH_GRAPHITE_ENABLED": "true",
+    "BANNO_HEALTH_GRAPHITE_HOST": "graphite.uat-2.banno-internal.com",
+    "BANNO_HEALTH_GRAPHITE_IDENTIFIER": "template-service",
+    "BANNO_HEALTH_GRAPHITE_INSTANCE_IDENTIFIER": "",
+    "BANNO_HEALTH_GRAPHITE_PORT": "2003",
+    "BANNO_HEALTH_GRAPHITE_PREFIX": "",
+    "POSTGRES_BANNO_ALL_JDBC_URL": "jdbc:postgresql://postgres10-lks.uat-2.banno-internal.com:5432/banno_all?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+    "POSTGRES_BANNO_ALL_USERNAME": "banno_db",
+    "KAFKA_ENABLED": "true",
+    "VAULT_ADDR": "https://vault.uat-2.banno-internal.com"
+  }
+}
