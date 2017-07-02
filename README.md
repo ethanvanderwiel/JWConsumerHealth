@@ -20,10 +20,14 @@ This service is the minimum requirements for getting a service deployed on marat
 Your project is now ready to be deployed to Marathon. There are a few ways you can do this, and we're going to use Jenkins.
 
 ### Setting up Jenkins for your new project
-1. Go to Jenkins and click `New Item` at the top-left.
-2. On the new page, go to the bottom and in the `copy from` field, find `template-service`. 
-3. Once that drop-down is populated go back to the top and name your project and press `Ok`. 
-
-
-
-4. 
+1. Go to Jenkins and click `New Item` at the top-left. (You must be logged in)
+2. On the new page, type in the name of your new service. Do **_not_** click `OK` yet.
+![Alt text](https://user-images.githubusercontent.com/3231194/27773261-5332a966-5f3b-11e7-8a51-aea095c9d1c8.png)
+3. Go to the bottom and in the `copy from` field, find `template-service`. Click `OK`.
+![Alt text](https://user-images.githubusercontent.com/3231194/27773262-533d2594-5f3b-11e7-9b48-e8fc755455e8.png)
+4. After clicking `OK`, find your `Repository` in the `Github` section.
+![Alt text](https://user-images.githubusercontent.com/3231194/27773258-53307bb4-5f3b-11e7-86d7-c320382ec358.png)
+5. Feel free to change the description for the job.
+6. `Save` and you're done. The job you have built uses the `Jenkinsfile` from your repository.
+7. Build the project, if it didn't start on its own.
+8. Your project should be deployed on Marathon Staging/UAT. 
