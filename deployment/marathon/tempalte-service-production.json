@@ -72,7 +72,7 @@
     "BANNO_HEALTH_GRAPHITE_INSTANCE_IDENTIFIER": "",
     "BANNO_HEALTH_GRAPHITE_PORT": "2003",
     "BANNO_HEALTH_GRAPHITE_PREFIX": "",
-    "POSTGRES_BANNO_ALL_JDBC_URL": "jdbc:postgresql://postgres10-lks.production-2.banno-internal.com:5432/banno_all?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+    "POSTGRES_BANNO_ALL_JDBC_URL": "jdbc:postgresql://postgres11-lks.production-2.banno-internal.com:5432/banno_all?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
     "POSTGRES_BANNO_ALL_USERNAME": "banno",
     "KAFKA_ENABLED": "true",
     "VAULT_ADDR": "https://vault.production-2.banno-internal.com"
