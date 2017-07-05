@@ -78,6 +78,21 @@ def checkoutSbtAndBuild(Map build) {
     }
 }
 
+
+String askDevelopersForGoAheadForProd() {
+    stage("Prod Dev Approval") {
+
+        def prodChangelog = createChangelog("production-2", "${releasedVersion}")
+        notifySlackChannel(message: "Ready to send release notes for production. Please approve.", url: "${env.BUILD_URL}input")
+
+        input(message: "Please input a high level changelog for this release ${releasedVersion} to send to approvers",
+            parameters: [
+                [$class: 'TextParameterDefinition', description: 'Changelog', name: 'changelog', defaultValue: prodChangelog]
+            ])
+    }
+}
+
+
 def emailOutReleaseNotesToApprovers(String changelog) {
     stage("Prod Email Approvers") {
         node("agent") {
