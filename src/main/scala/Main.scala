@@ -38,10 +38,7 @@ object Main extends ServerApp {
       _    <- printOutStarted
     } yield b
 
-  def service(metricRegistry: MetricRegistry) = Router(
-    "" -> Metrics(metricRegistry)(PingRoute.pingRouteService),
-    "/metrics" -> metricsService(metricRegistry)
-  )
+  def service(metricRegistry: MetricRegistry) = Metrics(metricRegistry)(PingRoute.pingRouteService)
 
   def startBlazeServer(config: HttpConfig, service: HttpService): Task[Server] = BlazeBuilder
     .bindHttp(config.port, config.host)
