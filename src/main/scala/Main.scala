@@ -5,11 +5,19 @@ import com.banno.config.discovery.{DiscoveredServiceInstance, ServiceDiscovery}
 import com.banno.health.{GraphiteReporter, Health}
 import com.banno.vault.client.{AppRoleVaultAuth, DefaultVault, Vault}
 import com.banno.vault.VaultClient
+
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.health.HealthCheckRegistry
+
 import com.typesafe.config.ConfigFactory
-import org.http4s.server.{Server, ServerApp}
+
+import org.http4s.HttpService
+import org.http4s.dsl._
 import org.http4s.server.blaze.BlazeBuilder
+import org.http4s.server.metrics._
+import org.http4s.server.Router
+import org.http4s.server.{Server, ServerApp}
+
 import scalaz._, Scalaz._
 import scalaz.concurrent.Task
 
@@ -19,21 +27,22 @@ object Main extends ServerApp {
 
   override def server(args: List[String]): Task[Server] =
     for {
-      c0 <- loadConfig
-      c  <- addVaultSecretsToConfig(c0)
-      mr  = new MetricRegistry()
-      _  <- setupHealthChecks(mr)
-      _  <- setupMetricsReporter(mr)
-      b  <- startBlazeServer(c.http)
-      _  <- registerHttpIntoServiceDiscovery(c.http)
-      _  <- printOutStarted
+      c0   <- loadConfig
+      c    <- addVaultSecretsToConfig(c0)
+      mr   =  new MetricRegistry()
+      srvc =  service(mr)
+      _    <- setupHealthChecks(mr)
+      _    <- setupMetricsReporter(mr)
+      b    <- startBlazeServer(c.http, srvc)
+      _    <- registerHttpIntoServiceDiscovery(c.http)
+      _    <- printOutStarted
     } yield b
 
-  val services = PingRoute.pingRouteService
+  def service(metricRegistry: MetricRegistry) = Metrics(metricRegistry)(PingRoute.pingRouteService)
 
-  def startBlazeServer(config: HttpConfig): Task[Server] = BlazeBuilder
+  def startBlazeServer(config: HttpConfig, service: HttpService): Task[Server] = BlazeBuilder
     .bindHttp(config.port, config.host)
-    .mountService(services, "/")
+    .mountService(service, "/")
     .start
 
   val printOutStarted: Task[Unit] = Task.delay {
