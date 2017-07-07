@@ -128,7 +128,7 @@ String getCurrentAppsEnvVersion(String environment) {
 String createChangelog(String environment, String toVersion) {
     node('agent') {
         String currentEnvVersion = getCurrentAppsEnvVersion(environment)
-        return bub("changelog create --ignore-libraries --from=${currentEnvVersion} --to=${toVersion} statements", true)
+        return bub("changelog create --ignore-libraries --from=${currentEnvVersion} --to=${toVersion} template-service", true)
     }
 }
 
