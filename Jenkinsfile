@@ -121,6 +121,26 @@ ${changelog}
     }
 }
 
+String getCurrentAppsEnvVersion(String environment) {
+    return bub("versions show-environments-marathon-version template-service --env=${environment}", true)
+}
+
+String createChangelog(String environment, String toVersion) {
+    node('agent') {
+        String currentEnvVersion = getCurrentAppsEnvVersion(environment)
+        return bub("changelog create --ignore-libraries --from=${currentEnvVersion} --to=${toVersion} statements", true)
+    }
+}
+
+def bub(String command, boolean returnStdout = false) {
+    ansiColor {
+        def result = sh(script: "bub ${command}", returnStdout: returnStdout)
+        if (returnStdout) {
+            return result.trim()
+        }
+    }
+}
+
 def notifySlackChannel(Map<String,String> options) {
     def defaults = [url:     env.BUILD_URL,
         displayName: currentBuild.displayName,
