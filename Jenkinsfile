@@ -5,8 +5,11 @@ releasedVersion = ""
 
 properties([buildDiscarder(logRotator(daysToKeepStr: '15'))])
 
-catchError {
-    if (env.BRANCH_NAME == "master") {
+
+if (env.BRANCH_NAME == "master") {
+
+    catchError {
+
         stage("Release") {
             checkoutSbtAndBuild(sbtTask: "releaseIfChanged", captureReleasedVersion: true)
         }
@@ -14,7 +17,7 @@ catchError {
             node("agent") {
                 git url: "https://github.com/Banno/template-service.git"
                 sh "git checkout ${releasedVersion}"
-                dir("deployment/marathon"){
+                dir("deployment/marathon") {
                     sh "./update-marathon.sh staging https://marathon.staging-2.banno-internal.com"
                 }
             }
@@ -36,14 +39,23 @@ catchError {
         }
 
         def changelog = askDevelopersForGoAheadForProd()
+
         emailOutReleaseNotesToApprovers(changelog)
     }
-    else {
-        stage("Build") {
-            checkoutSbtAndBuild(sbtTask: "clean test")
-        }
+
+    if (currentBuild.result == "SUCCESS" || currentBuild.result == null) { // null for ongoing build
+        notifySlackChannel(message: "Build successful", color: '#00FF00')
+
+    } else {
+        notifySlackChannel(message: "Build ${currentBuild.result}", color: '#FF0000')
     }
 }
+else {
+    stage("Build") {
+        checkoutSbtAndBuild(sbtTask: "clean test")
+    }
+}
+
 
 def checkoutSbtAndBuild(Map build) {
     def defaults = [sbtTask: "compile", captureReleasedVersion: false]
