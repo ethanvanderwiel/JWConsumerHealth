@@ -24,6 +24,9 @@ import scalaz.concurrent.Task
 object Main extends ServerApp {
 
   private[this] val logger = org.log4s.getLogger
+  @SuppressWarnings(Array("org.wartremover.warts.Var"))
+  private[this] var discoveredInstance: Option[DiscoveredServiceInstance] = None
+
 
   override def server(args: List[String]): Task[Server] =
     for {
@@ -98,12 +101,27 @@ object Main extends ServerApp {
     reporter
   }
 
-  def registerHttpIntoServiceDiscovery(config: HttpConfig): Task[DiscoveredServiceInstance] = Task.delay {
-    ServiceDiscovery.registerInstance(
-      name = BuildInfo.name,
-      serviceType = "http",
-      port = config.port,
-      group = None)
+  def registerHttpIntoServiceDiscovery(config: HttpConfig): Task[Unit] = Task.delay {
+    discoveredInstance = Some(
+      ServiceDiscovery.registerInstance(
+        name = BuildInfo.name,
+        serviceType = "http",
+        port = config.port,
+        group = None
+      )
+    )
+  }
+
+  @SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
+  def unregisterFromServiceDiscovery: Task[Unit] = Task.delay {
+    discoveredInstance.map { i =>
+      logger.info("unregistering consumer-external-links from service discovery")
+      ServiceDiscovery.unregisterInstance(i)
+    }
+  }
+
+  override def shutdown(server: Server): Task[Unit] = {
+    unregisterFromServiceDiscovery <* super.shutdown(server)
   }
 
 }
