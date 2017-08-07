@@ -13,27 +13,30 @@ if (env.BRANCH_NAME == "master") {
         stage("Release") {
             checkoutSbtAndBuild(sbtTask: "releaseIfChanged", captureReleasedVersion: true)
         }
-        stage("Staging Deploy") {
-            node("agent") {
-                git url: "https://github.com/Banno/template-service.git"
-                sh "git checkout ${releasedVersion}"
-                dir("deployment/marathon") {
-                    sh "./update-marathon.sh staging https://marathon.staging-2.banno-internal.com"
+
+        withCredentials([usernamePassword(credentialsId: "jenkins-ldap", usernameVariable: "MARATHON_LDAP_USERNAME", passwordVariable: "MARATHON_LDAP_PASSWORD")]) {
+            stage("Staging Deploy") {
+                node("agent") {
+                    git url: "https://github.com/Banno/template-service.git"
+                    sh "git checkout ${releasedVersion}"
+                    dir("deployment/marathon") {
+                        sh "./update-marathon.sh staging https://marathon.staging-2.banno-internal.com"
+                    }
                 }
             }
-        }
 
-        timeout(time: 1, unit: "DAYS") {
-            notifySlackChannel(message: "Please approve UAT deploy", url: "${env.BUILD_URL}input")
-            input message: "Promote to UAT?"
-        }
+            timeout(time: 1, unit: "DAYS") {
+                notifySlackChannel(message: "Please approve UAT deploy", url: "${env.BUILD_URL}input")
+                input message: "Promote to UAT?"
+            }
 
-        stage("UAT Deploy") {
-            node("agent") {
-                git url: "https://github.com/Banno/template-service.git"
-                sh "git checkout ${releasedVersion}"
-                dir("deployment/marathon") {
-                    sh "./update-marathon.sh uat https://marathon.uat-2.banno-internal.com"
+            stage("UAT Deploy") {
+                node("agent") {
+                    git url: "https://github.com/Banno/template-service.git"
+                    sh "git checkout ${releasedVersion}"
+                    dir("deployment/marathon") {
+                        sh "./update-marathon.sh uat https://marathon.uat-2.banno-internal.com"
+                    }
                 }
             }
         }
@@ -69,7 +72,7 @@ def checkoutSbtAndBuild(Map build) {
         } else {
             checkout scm
         }
-        
+
         def sbtHome = tool("sbt 0.13.13")
         sh "git clean -ffdx"
 
