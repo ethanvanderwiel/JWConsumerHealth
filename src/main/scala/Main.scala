@@ -115,7 +115,7 @@ object Main extends ServerApp {
   @SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
   def unregisterFromServiceDiscovery: Task[Unit] = Task.delay {
     discoveredInstance.map { i =>
-      logger.info("unregistering ${i.name} from service discovery")
+      logger.info(s"unregistering ${i.name} from service discovery")
       ServiceDiscovery.unregisterInstance(i)
     }
   }
