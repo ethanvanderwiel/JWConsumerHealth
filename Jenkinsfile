@@ -3,5 +3,5 @@
 bannoScalaMarathonPipelineV1 {
     githubUrl = "https://github.com/Banno/template-service"
     slackChannel = "#team-pupper"
-    teamName = "@pupper"
+    slackTeamName = "@pupper"
 }
