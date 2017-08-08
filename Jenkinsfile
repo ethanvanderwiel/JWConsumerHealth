@@ -1,8 +1,7 @@
-@Library("banno-jenkins-shared-pipelines@scala-marathon-app-pipeline") // pointed at branch to test it out
-import com.banno.jenkins.pipelines.v1.StandardMarathonScalaPipeline
+@Library("banno-jenkins-shared-pipelines@try-global-var-instead") _ // pointed at branch to test it out
 
-new StandardMarathonScalaPipeline(
-    githubUrl: "https://github.com/Banno/template-service",
-    slackChannel: "#team-pupper",
-    teamName: "@pupper"
-).run()
+bannoScalaMarathonPipelineV1 {
+    githubUrl = "https://github.com/Banno/template-service"
+    slackChannel = "#team-pupper"
+    teamName = "@pupper"
+}
