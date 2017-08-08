@@ -1,4 +1,4 @@
-@Library("banno-jenkins-shared-pipelines@scala-marathon-app-pipeline") _ // pointed at branch to test it out
+library "banno-jenkins-shared-pipelines@scala-marathon-app-pipeline"
 
 bannoScalaMarathonPipeline {
     githubUrl = "https://github.com/Banno/template-service"
