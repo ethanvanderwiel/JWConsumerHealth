@@ -1,6 +1,6 @@
-@Library("banno-jenkins-shared-pipelines@try-global-var-instead") _ // pointed at branch to test it out
+@Library("banno-jenkins-shared-pipelines@1003af703c4f57d5c5b1498cb9d19bace1cd8cc2") _ // pointed at branch to test it out
 
-bannoScalaMarathonPipelineV1 {
+bannoScalaMarathonPipeline {
     githubUrl = "https://github.com/Banno/template-service"
     slackChannel = "#team-pupper"
     slackTeamName = "@pupper"
