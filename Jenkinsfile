@@ -4,4 +4,5 @@ bannoScalaMarathonPipeline {
     githubUrl = "https://github.com/Banno/template-service"
     slackChannel = "#team-pupper"
     slackTeamName = "@pupper"
+    marathonDirectoryInRepository = "deployment/marathon"
 }
