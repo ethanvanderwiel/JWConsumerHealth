@@ -1,4 +1,4 @@
-### This is a template for deploying a service with Marathon. 
+### This is a template for deploying a service with Marathon.
 
 This service is the minimum requirements for getting a service deployed on marathon with:
 - Jenkinsfile for automatic builds and deploys to Staging/UAT
@@ -13,7 +13,7 @@ This service is the minimum requirements for getting a service deployed on marat
 ### Getting your own service up and running
 1. Copy this repository.
 2. Find/replace all occurences of `template-service` with your app's name.
-3. Find/replace all occurences of `com.banno.template` with whatever you want your package named. 
+3. Find/replace all occurences of `com.banno.template` with whatever you want your package named.
 4. Verify that `template-service` and `template` don't exist anywhere in your project.
 5. Create a new repository on github and push up your project.
 
@@ -30,4 +30,8 @@ Your project is now ready to be deployed to Marathon. There are a few ways you c
 5. Feel free to change the description for the job.
 6. `Save` and you're done. The job you have built uses the `Jenkinsfile` from your repository.
 7. Build the project, if it didn't start on its own.
-8. Your project should be deployed on Marathon Staging/UAT. 
+8. Your project should be deployed on Marathon Staging/UAT.
+
+### Vault Setup
+
+Please refer to the [Vault AppRole setup docs](https://github.com/Banno/environments/blob/master/docs/vault-app-setup.md)
