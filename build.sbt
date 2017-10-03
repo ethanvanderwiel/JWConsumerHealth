@@ -47,17 +47,4 @@ libraryDependencies ++= Seq(
 )
 
 bannoReleaseGitPushOnlyTag := true
-bannoReleasePostCommitBeforeTagStep := updateMarathonConfigsAndCommit
 publishArtifact in ThisBuild := false
-
-lazy val updateMarathonConfigsAndCommit = ReleaseStep(
-  action = (st: State) => {
-    val extracted = Project.extract(st)
-    val v = extracted.get(version)
-    val exitCode =
-      (Process("./update-json-version.sh" :: v :: Nil, extracted.get(baseDirectory) / "deployment/marathon") #&&
-         Process("git" :: "commit" :: "-a" :: "-m" :: s"Updating marathon configs to version $v" :: Nil) !)
-    if (exitCode != 0) sys.error("Did not update marathon version! Command failed.")
-    st
-  }
-)
