@@ -6,9 +6,11 @@ def version = bannoScalaPipeline(
     slackChannel: "#template-alerts"
 )
 
-bannoEnvironmentsMarathonDeploy(
-    appName: "template-service",
-    slackChannel: "#template-alerts",
-    slackTeamName: "@pupper",
-    releaseVersion: version
-)
+if (env.BRANCH_NAME == "master") {
+    bannoEnvironmentsMarathonDeploy(
+        appName: "template-service",
+        slackChannel: "#template-alerts",
+        slackTeamName: "@pupper",
+        releaseVersion: version
+    )
+}
