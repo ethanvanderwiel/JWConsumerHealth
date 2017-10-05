@@ -1,4 +1,4 @@
-library "banno-jenkins-shared-pipelines@banno-scala-pipeline"
+library "banno-jenkins-shared-pipelines@v1"
 library "environments@master"
 
 def version = bannoScalaPipeline(
