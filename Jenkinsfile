@@ -1,5 +1,4 @@
 library "banno-jenkins-shared-pipelines@v1"
-library "environments@master"
 
 def version = bannoScalaPipeline(
     githubUrl: "https://github.com/Banno/template-service",
@@ -7,6 +6,8 @@ def version = bannoScalaPipeline(
 )
 
 if (env.BRANCH_NAME == "master") {
+    library "environments@master"
+
     bannoEnvironmentsMarathonDeploy(
         appName: "template-service",
         slackChannel: "#template-alerts",
