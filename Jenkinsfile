@@ -5,6 +5,8 @@ def version = bannoScalaPipeline(
     slackChannel: "#template-alerts"
 )
 
+echo "${version}"
+
 if (env.BRANCH_NAME == "master") {
     library "environments@master"
 
