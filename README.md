@@ -11,8 +11,8 @@ This service is the minimum requirements for getting a service deployed on marat
 - Ping route
 
 ### Getting your own service up and running
-1. Refer to [Marathon configuration setup docs](https://github.com/Banno/environments/blob/master/docs/marathon-app-setup.md) for setting up your app in the environments repo.
 1. If your app needs to use Vault, refer to the [Vault AppRole setup docs](https://github.com/Banno/environments/blob/master/docs/vault-app-setup.md).
+1. Refer to [Marathon configuration setup docs](https://github.com/Banno/environments/blob/master/docs/marathon-app-setup.md) for setting up your app in the environments repo.
 1. Your app should be deployed
 1. Copy this repository.
 1. Find/replace all occurences of `template-service` with your app's name.
