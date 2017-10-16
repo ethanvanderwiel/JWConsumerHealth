@@ -24,6 +24,7 @@ This service is the minimum requirements for getting a service deployed on marat
 1. Your app should be deployed.
 1. You can now uncomment the lines that were commented out in the previous step: https://github.com/Banno/template-service/blob/master/Jenkinsfile#L8-L17
 1. Make sure everything locally in your project is committed and pushed to the repository.
+1. As your application is deployed through the environments you can [add nagios checks](https://github.com/banno/nagios-config#adding-checks-for-a-new-service) to be notified when the app is unhealthy.
 
 ### Setting up Jenkins for your new project
 1. Go to Jenkins and click `New Item` at the top-left. (You must be logged in)
