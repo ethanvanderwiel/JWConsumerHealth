@@ -13,10 +13,10 @@ val specs2Version = "3.8.9"
 val argonautVersion = "6.2"
 val enumeratumVersion = "1.5.12"
 
-lazy val `template-service` =
+lazy val `ssl-test-client` =
   project.in(file("."))
 
-name := "template-service"
+name := "ssl-test-client"
 
 enablePlugins(BannoDockerPlugin)
 bannoDockerDefaultHeapSize := "128m"

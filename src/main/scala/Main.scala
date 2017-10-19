@@ -1,10 +1,8 @@
-package com.banno.template
+package com.banno.ssltestclient
 
 import com.banno.BuildInfo
 import com.banno.config.discovery.{DiscoveredServiceInstance, ServiceDiscovery}
 import com.banno.health.{GraphiteReporter, Health}
-import com.banno.vault.client.{AppRoleVaultAuth, DefaultVault, Vault}
-import com.banno.vault.VaultClient
 
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.health.HealthCheckRegistry
@@ -30,8 +28,7 @@ object Main extends ServerApp {
 
   override def server(args: List[String]): Task[Server] =
     for {
-      c0   <- loadConfig
-      c    <- addVaultSecretsToConfig(c0)
+      c    <- loadConfig
       mr   =  new MetricRegistry()
       srvc =  service(mr)
       _    <- setupHealthChecks(mr)
@@ -49,32 +46,12 @@ object Main extends ServerApp {
     .start
 
   val printOutStarted: Task[Unit] = Task.delay {
-    logger.info("template-service has started")
+    logger.info("ssl-test-client has started")
   }
 
   val loadConfig: Task[ServiceConfig] = Task.delay {
     val config = ConfigFactory.load()
-    pureconfig.loadConfigOrThrow[ServiceConfig](config, "com.banno.template")
-  }
-
-  def addVaultSecretsToConfig(config: ServiceConfig): Task[ServiceConfig] = {
-    if (config.vault.enabled) updateConfigWithVaultSecrets(config) else Task.now(config)
-  }
-
-  def updateConfigWithVaultSecrets(config: ServiceConfig): Task[ServiceConfig] = {
-    for {
-      vaultClient <- createVaultClient(config.vault)
-      postgresPassword <- Task.fromDisjunction { vaultClient.readSecretOrFail(config.vault.postgresPasswordPath).toDisjunction }
-    } yield {
-      config.copy(postgres = config.postgres.copy(password = postgresPassword))
-    }
-  }
-
-  def createVaultClient(vaultConfig: VaultConfig): Task[Vault] = Task.delay {
-    new DefaultVault(
-      auth = new AppRoleVaultAuth(vaultConfig.roleId),
-      vaultClient = new VaultClient(List(vaultConfig.address))
-    )
+    pureconfig.loadConfigOrThrow[ServiceConfig](config, "com.banno.ssltestclient")
   }
 
   def setupHealthChecks(registry: MetricRegistry): Task[Health] = Task.delay {
@@ -114,7 +91,7 @@ object Main extends ServerApp {
 
   @SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
   def unregisterFromServiceDiscovery: Task[Unit] = Task.delay {
-    discoveredInstance.map { i =>
+    discoveredInstance.foreach { i =>
       logger.info(s"unregistering ${i.name} from service discovery")
       ServiceDiscovery.unregisterInstance(i)
     }
