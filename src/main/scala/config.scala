@@ -1,4 +1,4 @@
-package com.banno.ssltestclient
+package com.banno.template
 
 case class HttpConfig(
   host: String,
@@ -12,7 +12,16 @@ case class PostgresConfig(
   driver: String
 )
 
+case class VaultConfig(
+  address: String,
+  roleId: String,
+  postgresPasswordPath: String
+) {
+  val enabled: Boolean = address.nonEmpty
+}
+
 case class ServiceConfig(
   http: HttpConfig,
-  postgres: PostgresConfig
+  postgres: PostgresConfig,
+  vault: VaultConfig
 )
