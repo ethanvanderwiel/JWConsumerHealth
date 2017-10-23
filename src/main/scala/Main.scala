@@ -12,10 +12,8 @@ import com.codahale.metrics.health.HealthCheckRegistry
 import com.typesafe.config.ConfigFactory
 
 import org.http4s.HttpService
-import org.http4s.dsl._
 import org.http4s.server.blaze.BlazeBuilder
 import org.http4s.server.metrics._
-import org.http4s.server.Router
 import org.http4s.server.{Server, ServerApp}
 
 import scalaz._, Scalaz._
@@ -114,7 +112,7 @@ object Main extends ServerApp {
 
   @SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
   def unregisterFromServiceDiscovery: Task[Unit] = Task.delay {
-    discoveredInstance.map { i =>
+    discoveredInstance.foreach { i =>
       logger.info(s"unregistering ${i.name} from service discovery")
       ServiceDiscovery.unregisterInstance(i)
     }
