@@ -14,37 +14,40 @@ import com.typesafe.config.ConfigFactory
 import org.http4s.HttpService
 import org.http4s.server.blaze.BlazeBuilder
 import org.http4s.server.metrics._
-import org.http4s.server.{Server, ServerApp}
-
+import org.http4s.util.ProcessApp
 import scalaz._, Scalaz._
 import scalaz.concurrent.Task
+import scalaz.stream._
 
-object Main extends ServerApp {
+object Main extends ProcessApp {
 
   private[this] val logger = org.log4s.getLogger
   @SuppressWarnings(Array("org.wartremover.warts.Var"))
   private[this] var discoveredInstance: Option[DiscoveredServiceInstance] = None
 
-
-  override def server(args: List[String]): Task[Server] =
-    for {
-      c0   <- loadConfig
-      c    <- addVaultSecretsToConfig(c0)
+  @SuppressWarnings(Array("org.wartremover.warts.Any"))
+  def process(args: List[String]) =
+    (for {
+      c0   <- Process.eval(loadConfig)
+      c    <- Process.eval(addVaultSecretsToConfig(c0))
       mr   =  new MetricRegistry()
       srvc =  service(mr)
-      _    <- setupHealthChecks(mr)
-      _    <- setupMetricsReporter(mr)
-      b    <- startBlazeServer(c.http, srvc)
-      _    <- registerHttpIntoServiceDiscovery(c.http)
-      _    <- printOutStarted
-    } yield b
+      _    <- Process.eval(setupHealthChecks(mr))
+      _    <- Process.eval(setupMetricsReporter(mr))
+      b    <- startBlazeServer(c.http, service(mr)) merge
+               Process.eval_ { registerHttpIntoServiceDiscovery(c.http) } merge
+               Process.eval_ { printOutStarted }
+     } yield b) onComplete {
+      Process.eval_(unregisterFromServiceDiscovery)
+    }
 
   def service(metricRegistry: MetricRegistry) = Metrics(metricRegistry)(PingRoute.pingRouteService)
 
-  def startBlazeServer(config: HttpConfig, service: HttpService): Task[Server] = BlazeBuilder
-    .bindHttp(config.port, config.host)
-    .mountService(service, "/")
-    .start
+  def startBlazeServer(config: HttpConfig, service: HttpService) =
+    BlazeBuilder
+      .bindHttp(config.port, config.host)
+      .mountService(service, "/")
+      .serve
 
   val printOutStarted: Task[Unit] = Task.delay {
     logger.info("template-service has started")
@@ -110,16 +113,11 @@ object Main extends ServerApp {
     )
   }
 
-  @SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
   def unregisterFromServiceDiscovery: Task[Unit] = Task.delay {
     discoveredInstance.foreach { i =>
       logger.info(s"unregistering ${i.name} from service discovery")
       ServiceDiscovery.unregisterInstance(i)
     }
-  }
-
-  override def shutdown(server: Server): Task[Unit] = {
-    unregisterFromServiceDiscovery <* super.shutdown(server)
   }
 
 }

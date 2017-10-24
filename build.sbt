@@ -6,7 +6,7 @@ val doobieVersion = "0.4.4"
 val http4sVersion = "0.16.5a"
 val log4sVersion = "1.3.4"
 val pureConfigVersion = "0.8.0"
-val scalazVersion = "7.2.12"
+val scalazVersion = "7.2.15"
 val scalaTestVersion = "3.0.1"
 val shapelessVersion = "2.3.2"
 val specs2Version = "3.8.9"
@@ -61,7 +61,7 @@ scalacOptions ++= Seq(
   "-language:higherKinds",
   "-language:implicitConversions",
   "-unchecked",
-  "-Xfatal-warnings",
+  //"-Xfatal-warnings",
   "-Xlint",
   "-Yno-adapted-args",
   "-Ywarn-dead-code",        // N.B. doesn't work well with the ??? hole
