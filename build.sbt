@@ -10,6 +10,7 @@ val scalaTestVersion = "3.0.4"
 val shapelessVersion = "2.3.2"
 val argonautVersion = "6.2"
 val enumeratumVersion = "1.5.12"
+val dropwizardMetricsVersion = "3.2.3"
 
 lazy val `template-service` =
   project.in(file("."))
@@ -39,6 +40,13 @@ libraryDependencies ++= Seq(
   "org.http4s" %% "http4s-server-metrics" % http4sVersion,
   "org.log4s" %% "log4s" % log4sVersion,
   "org.tpolecat" %% "doobie-core" % doobieVersion,
+  "io.dropwizard.metrics" % "metrics-core" % dropwizardMetricsVersion,
+  "io.dropwizard.metrics" % "metrics-graphite" % dropwizardMetricsVersion,
+  "io.dropwizard.metrics" % "metrics-healthchecks" % dropwizardMetricsVersion,
+  "io.dropwizard.metrics" % "metrics-json" % dropwizardMetricsVersion,
+  "io.dropwizard.metrics" % "metrics-jvm" % dropwizardMetricsVersion,
+  "io.dropwizard.metrics" % "metrics-logback" % dropwizardMetricsVersion,
+  "io.dropwizard.metrics" % "metrics-servlets" % dropwizardMetricsVersion,
   "org.tpolecat" %% "doobie-scalatest" % doobieVersion % Test,
   "org.tpolecat" %% "doobie-hikari" % doobieVersion,
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
