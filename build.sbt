@@ -6,7 +6,6 @@ val doobieVersion = "0.4.4"
 val http4sVersion = "0.16.5a"
 val log4sVersion = "1.3.4"
 val pureConfigVersion = "0.8.0"
-val scalazVersion = "7.2.15"
 val scalaTestVersion = "3.0.1"
 val shapelessVersion = "2.3.2"
 val specs2Version = "3.8.9"
@@ -46,8 +45,6 @@ libraryDependencies ++= Seq(
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
   "org.tpolecat" %% "doobie-h2" % doobieVersion % Test,
   "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
-  "org.scalaz" %% "scalaz-concurrent" % scalazVersion,
-  "org.scalaz" %% "scalaz-core" % scalazVersion,
   "org.specs2" %% "specs2-core" % specs2Version % Test,
   "org.specs2" %% "specs2-scalaz" % specs2Version % Test,
   "org.typelevel" %% "scalaz-scalatest" % "1.1.2" % Test
