@@ -35,9 +35,9 @@ object Main extends ProcessApp {
       _    <- Process.eval(setupHealthChecks(mr))
       _    <- Process.eval(setupMetricsReporter(mr))
       b    <- startBlazeServer(c.http, service(mr)) merge
-               Process.eval_(registerHttpIntoServiceDiscovery(c.http)) merge
-               Process.eval_(printOutStarted)
-     } yield b) onComplete {
+               Process.eval(registerHttpIntoServiceDiscovery(c.http)) merge
+               Process.eval(printOutStarted)
+     } yield b).drain onComplete {
       Process.eval_(unregisterFromServiceDiscovery)
     }
 
