@@ -4,11 +4,10 @@ val bannoScalaLibrariesVersion = "7.0.0"
 val bannoVaultScalaApiVersion = "3.3.0"
 val doobieVersion = "0.4.4"
 val http4sVersion = "0.16.5a"
-val log4sVersion = "1.3.4"
+val log4sVersion = "1.4.0"
 val pureConfigVersion = "0.8.0"
-val scalaTestVersion = "3.0.1"
+val scalaTestVersion = "3.0.4"
 val shapelessVersion = "2.3.2"
-val specs2Version = "3.8.9"
 val argonautVersion = "6.2"
 val enumeratumVersion = "1.5.12"
 
@@ -30,7 +29,7 @@ libraryDependencies ++= Seq(
   "com.banno" %% "scala-vault-api" % bannoVaultScalaApiVersion,
   "com.beachape" %% "enumeratum-argonaut" % enumeratumVersion,
   "com.chuusai" %% "shapeless" % shapelessVersion,
-  "com.github.alexarchambault" %% "argonaut-shapeless_6.2" % "1.2.0-M5",
+  "com.github.alexarchambault" %% "argonaut-shapeless_6.2" % "1.2.0-M6",
   "com.github.alexarchambault" %% "scalacheck-shapeless_1.13" % "1.1.7" % Test,
   "com.github.pureconfig" %% "pureconfig" % pureConfigVersion,
   "io.argonaut" %% "argonaut-scalaz" % argonautVersion,
@@ -45,8 +44,6 @@ libraryDependencies ++= Seq(
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
   "org.tpolecat" %% "doobie-h2" % doobieVersion % Test,
   "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
-  "org.specs2" %% "specs2-core" % specs2Version % Test,
-  "org.specs2" %% "specs2-scalaz" % specs2Version % Test,
   "org.typelevel" %% "scalaz-scalatest" % "1.1.2" % Test
 )
 
