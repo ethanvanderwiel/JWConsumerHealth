@@ -11,7 +11,7 @@ val shapelessVersion = "2.3.2"
 val argonautVersion = "6.2"
 val enumeratumVersion = "1.5.12"
 val dropwizardMetricsVersion = "3.2.3"
-
+val specs2Version = "4.0.0"
 lazy val `template-service` =
   project.in(file("."))
 
