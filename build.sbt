@@ -51,6 +51,8 @@ libraryDependencies ++= Seq(
   "org.tpolecat" %% "doobie-hikari" % doobieVersion,
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
   "org.tpolecat" %% "doobie-h2" % doobieVersion % Test,
+  "org.specs2" %% "specs2-core" % specs2Version % Test,
+  "org.specs2" %% "specs2-scalaz" % specs2Version % Test,
   "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
   "org.typelevel" %% "scalaz-scalatest" % "1.1.2" % Test
 )
