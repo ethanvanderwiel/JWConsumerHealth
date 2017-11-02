@@ -5,18 +5,16 @@ import com.banno.config.discovery.{DiscoveredServiceInstance, ServiceDiscovery}
 import com.banno.health.{GraphiteReporter, Health}
 import com.banno.vault.client.{AppRoleVaultAuth, DefaultVault, Vault}
 import com.banno.vault.VaultClient
-
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.health.HealthCheckRegistry
-
 import com.typesafe.config.ConfigFactory
-
 import org.http4s.HttpService
 import org.http4s.server.blaze.BlazeBuilder
 import org.http4s.server.metrics._
 import org.http4s.server.{Server, ServerApp}
 
-import scalaz._, Scalaz._
+import scalaz._
+import Scalaz._
 import scalaz.concurrent.Task
 
 object Main extends ServerApp {
@@ -62,9 +60,11 @@ object Main extends ServerApp {
   def updateConfigWithVaultSecrets(config: ServiceConfig): Task[ServiceConfig] = {
     for {
       vaultClient <- createVaultClient(config.vault)
-      postgresPassword <- Task.fromDisjunction { vaultClient.readSecretOrFail(config.vault.postgresPasswordPath).toDisjunction }
+      postgresCreds <- Task.fromDisjunction { vaultClient.readPath(config.vault.postgresCredsPath).toDisjunction }
+      username <- Task.fromDisjunction { postgresCreds.get("username") \/> NoPostgresUsername }
+      password <- Task.fromDisjunction { postgresCreds.get("password") \/> NoPostgresPassword }
     } yield {
-      config.copy(postgres = config.postgres.copy(password = postgresPassword))
+      config.copy(postgres = config.postgres.copy(username = username, password = password))
     }
   }
 
