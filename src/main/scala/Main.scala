@@ -8,6 +8,8 @@ import com.banno.vault.VaultClient
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.health.HealthCheckRegistry
 import com.typesafe.config.ConfigFactory
+import doobie.hikari.hikaritransactor.HikariTransactor
+import doobie.imports._
 import org.http4s.HttpService
 import org.http4s.server.blaze.BlazeBuilder
 import org.http4s.server.metrics._
@@ -30,7 +32,8 @@ object Main extends ServerApp {
       c    <- addVaultSecretsToConfig(c0)
       mr   =  new MetricRegistry()
       srvc =  service(mr)
-      _    <- setupHealthChecks(mr)
+      transactor <- transactor(c.postgres.password, c.postgres)
+      _    <- setupHealthChecks(mr, transactor)
       _    <- setupMetricsReporter(mr)
       b    <- startBlazeServer(c.http, srvc)
       _    <- registerHttpIntoServiceDiscovery(c.http)
@@ -75,12 +78,32 @@ object Main extends ServerApp {
     )
   }
 
-  def setupHealthChecks(registry: MetricRegistry): Task[Health] = Task.delay {
+  def transactor(password: String, settings: PostgresConfig): Task[Transactor[Task]] =
+    HikariTransactor[Task](
+      settings.driver,
+      settings.jdbcUrl,
+      settings.username,
+      password
+    )
+
+  def setupHealthChecks(registry: MetricRegistry, transactor: Transactor[Task]): Task[Health] = Task.delay {
     val health = new Health {
       val criticalHealthCheckRegistry = new HealthCheckRegistry
       val warningHealthCheckRegistry = new HealthCheckRegistry
       val metricRegistry: MetricRegistry = registry
     }
+
+    def dbIsAlive: Task[Unit] = sql"SELECT 1".query[Int].option.transact(transactor).void
+
+//    for {
+//      _       <- Task.delay { health.checkVM() }
+//      _       <- Task.delay { health.checkHighLoggedErrorRate() }
+//      dbCheck <- appConfig.dbIsAlive
+//      _       <- Task.delay { health.check("database-connection", true)(dbCheck) }
+//      _       <- Task.delay { health.exposeOverHttp() }
+//    } yield health
+
+    health.check("postgres-is-alive", true)(dbIsAlive.unsafePerformSync)
 
     health.checkVM()
     health.checkHighLoggedErrorRate()
