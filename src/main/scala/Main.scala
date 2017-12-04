@@ -32,7 +32,9 @@ object Main extends ProcessApp {
       c    <- Process.eval(addVaultSecretsToConfig(c0))
       mr   =  new MetricRegistry()
       srvc =  service(mr)
-      trns <- Process.eval(transactor(c.postgres.password, c.postgres))
+      trns <- Process.bracket(transactor(c.postgres.password, c.postgres)) { t =>
+                Process.eval(Task.delay(t.configure(_.close))).drain
+              }(Process.emit(_))
       _    <- Process.eval(setupHealthChecks(mr, trns))
       _    <- Process.eval(setupMetricsReporter(mr))
       b    <- startBlazeServer(c.http, service(mr)) merge
@@ -81,7 +83,7 @@ object Main extends ProcessApp {
     )
   }
 
-  def transactor(password: String, settings: PostgresConfig): Task[Transactor[Task]] =
+  def transactor(password: String, settings: PostgresConfig): Task[HikariTransactor[Task]] =
     HikariTransactor[Task](
       settings.driver,
       settings.jdbcUrl,
