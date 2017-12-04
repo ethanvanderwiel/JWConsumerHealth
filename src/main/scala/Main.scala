@@ -33,7 +33,7 @@ object Main extends ProcessApp {
       mr   =  new MetricRegistry()
       srvc =  service(mr)
       trns <- Process.bracket(transactor(c.postgres.password, c.postgres)) { t =>
-                Process.eval(Task.delay(t.configure(_.close))).drain
+                Process.eval_(Task.delay(t.configure(_.close)))
               }(Process.emit(_))
       _    <- Process.eval(setupHealthChecks(mr, trns))
       _    <- Process.eval(setupMetricsReporter(mr))
