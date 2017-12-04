@@ -32,15 +32,8 @@ object Main extends ProcessApp {
       c    <- Process.eval(addVaultSecretsToConfig(c0))
       mr   =  new MetricRegistry()
       srvc =  service(mr)
-      transactor <- Process.eval(transactor(c.postgres.password, c.postgres))
-//      _    <- setupHealthChecks(mr, transactor)
-//      _    <- setupMetricsReporter(mr)
-//      b    <- startBlazeServer(c.http, srvc)
-//      _    <- registerHttpIntoServiceDiscovery(c.http)
-//      _    <- printOutStarted
-//    } yield b
-
-      _    <- Process.eval(setupHealthChecks(mr, transactor))
+      trns <- Process.eval(transactor(c.postgres.password, c.postgres))
+      _    <- Process.eval(setupHealthChecks(mr, trns))
       _    <- Process.eval(setupMetricsReporter(mr))
       b    <- startBlazeServer(c.http, service(mr)) merge
                Process.eval(registerHttpIntoServiceDiscovery(c.http)) merge
