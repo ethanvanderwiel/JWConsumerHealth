@@ -95,14 +95,6 @@ object Main extends ServerApp {
 
     def dbIsAlive: Task[Unit] = sql"SELECT 1".query[Int].option.transact(transactor).void
 
-//    for {
-//      _       <- Task.delay { health.checkVM() }
-//      _       <- Task.delay { health.checkHighLoggedErrorRate() }
-//      dbCheck <- appConfig.dbIsAlive
-//      _       <- Task.delay { health.check("database-connection", true)(dbCheck) }
-//      _       <- Task.delay { health.exposeOverHttp() }
-//    } yield health
-
     health.check("postgres-is-alive", true)(dbIsAlive.unsafePerformSync)
 
     health.checkVM()
