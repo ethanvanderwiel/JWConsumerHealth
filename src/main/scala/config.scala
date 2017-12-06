@@ -1,7 +1,5 @@
 package com.banno.template
 
-import scala.util.control.NoStackTrace
-
 case class HttpConfig(
   host: String,
   port: Int
@@ -17,7 +15,7 @@ case class PostgresConfig(
 case class VaultConfig(
   address: String,
   roleId: String,
-  postgresCredsPath: String
+  postgresPasswordPath: String
 ) {
   val enabled: Boolean = address.nonEmpty
 }
@@ -27,6 +25,3 @@ case class ServiceConfig(
   postgres: PostgresConfig,
   vault: VaultConfig
 )
-
-case object NoPostgresUsername extends RuntimeException with NoStackTrace
-case object NoPostgresPassword extends RuntimeException with NoStackTrace
