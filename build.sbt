@@ -1,7 +1,7 @@
 scalaVersion in ThisBuild := "2.11.11"
 
 val bannoScalaLibrariesVersion = "7.0.0"
-val bannoVaultScalaApiVersion = "4.1.0"
+val bannoVaultScalaApiVersion = "3.3.0"
 val doobieVersion = "0.4.4"
 val http4sVersion = "0.16.5a"
 val log4sVersion = "1.4.0"
