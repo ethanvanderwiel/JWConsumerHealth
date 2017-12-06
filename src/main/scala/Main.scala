@@ -5,16 +5,16 @@ import com.banno.config.discovery.{DiscoveredServiceInstance, ServiceDiscovery}
 import com.banno.health.{GraphiteReporter, Health}
 import com.banno.vault.client.{AppRoleVaultAuth, DefaultVault, Vault}
 import com.banno.vault.VaultClient
-
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.health.HealthCheckRegistry
-
 import com.typesafe.config.ConfigFactory
-
+import doobie.hikari.hikaritransactor.HikariTransactor
+import doobie.imports._
 import org.http4s.HttpService
 import org.http4s.server.blaze.BlazeBuilder
 import org.http4s.server.metrics._
 import org.http4s.util.ProcessApp
+
 import scalaz._, Scalaz._
 import scalaz.concurrent.Task
 import scalaz.stream._
@@ -32,7 +32,10 @@ object Main extends ProcessApp {
       c    <- Process.eval(addVaultSecretsToConfig(c0))
       mr   =  new MetricRegistry()
       srvc =  service(mr)
-      _    <- Process.eval(setupHealthChecks(mr))
+      trns <- Process.bracket(transactor(c.postgres.password, c.postgres)) { t =>
+                Process.eval_(Task.delay(t.configure(_.close)))
+              }(Process.emit(_))
+      _    <- Process.eval(setupHealthChecks(mr, trns))
       _    <- Process.eval(setupMetricsReporter(mr))
       b    <- startBlazeServer(c.http, service(mr)) merge
                Process.eval(registerHttpIntoServiceDiscovery(c.http)) merge
@@ -65,9 +68,11 @@ object Main extends ProcessApp {
   def updateConfigWithVaultSecrets(config: ServiceConfig): Task[ServiceConfig] = {
     for {
       vaultClient <- createVaultClient(config.vault)
-      postgresPassword <- Task.fromDisjunction { vaultClient.readSecretOrFail(config.vault.postgresPasswordPath).toDisjunction }
+      postgresCreds <- Task.fromDisjunction { vaultClient.readPath(config.vault.postgresCredsPath).toDisjunction }
+      username <- Task.fromDisjunction { postgresCreds.get("username") \/> NoPostgresUsername }
+      password <- Task.fromDisjunction { postgresCreds.get("password") \/> NoPostgresPassword }
     } yield {
-      config.copy(postgres = config.postgres.copy(password = postgresPassword))
+      config.copy(postgres = config.postgres.copy(username = username, password = password))
     }
   }
 
@@ -78,12 +83,24 @@ object Main extends ProcessApp {
     )
   }
 
-  def setupHealthChecks(registry: MetricRegistry): Task[Health] = Task.delay {
+  def transactor(password: String, settings: PostgresConfig): Task[HikariTransactor[Task]] =
+    HikariTransactor[Task](
+      settings.driver,
+      settings.jdbcUrl,
+      settings.username,
+      password
+    )
+
+  def setupHealthChecks(registry: MetricRegistry, transactor: Transactor[Task]): Task[Health] = Task.delay {
     val health = new Health {
       val criticalHealthCheckRegistry = new HealthCheckRegistry
       val warningHealthCheckRegistry = new HealthCheckRegistry
       val metricRegistry: MetricRegistry = registry
     }
+
+    def dbIsAlive: Task[Unit] = sql"SELECT 1".query[Int].option.transact(transactor).void
+
+    health.check("postgres-is-alive", true)(dbIsAlive.unsafePerformSync)
 
     health.checkVM()
     health.checkHighLoggedErrorRate()
