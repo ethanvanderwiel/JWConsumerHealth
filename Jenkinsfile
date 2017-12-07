@@ -11,7 +11,7 @@ if (env.BRANCH_NAME == "master") {
     bannoEnvironmentsMarathonDeploy(
         appName: "template-service",
         slackChannel: "#template-alerts",
-        slackTeamName: "@pupper",
+        slackTeamName: "@placeholder",
         releaseVersion: version
     )
 }

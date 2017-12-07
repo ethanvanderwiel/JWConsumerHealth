@@ -14,7 +14,7 @@ This service is the minimum requirements for getting a service deployed on marat
 1. Copy this repository.
 1. Find/replace all occurences of `template-service` with your app's name.
 1. Find/replace all occurences of `com.banno.template` with whatever you want your package named.
-1. Verify that `template-service` and `template` don't exist anywhere in your project.
+1. Verify that `template-service`, `template`, and `placeholder` don't exist anywhere in your project.
 1. At this point there is a small chicken and egg problem, to get around that, comment out these lines in your copied Jenkinsfile: https://github.com/Banno/template-service/blob/master/Jenkinsfile#L8-L17
 1. Create a new repository on github and push up your project.
 1. Follow the steps below to set up Jenkins for your new project.
