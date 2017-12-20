@@ -21,7 +21,7 @@ This service is the minimum requirements for getting a service deployed on marat
 1. Your app should have its first release.
 1. If your app will be using Postgres, there is a [health check](https://github.com/Banno/template-service/blob/master/src/main/scala/Main.scala#L101) enabled by default and part of the configuration will be set up in the next step. If the app will not be using Postgres, the health check will need removed.
 1. If your app needs to use Vault, refer to the [Vault AppRole setup docs](https://github.com/Banno/environments/blob/master/docs/vault-app-setup.md).
-1. Refer to [Marathon configuration setup docs](https://github.com/Banno/environments/blob/master/docs/marathon-app-setup.md) for setting up your app in the environments repo. For the version, use the first release version created in the above steps.
+1. Refer to [Marathon configuration setup docs](https://github.com/Banno/environments/blob/master/docs/marathon-app-setup.md) for setting up your app in the environments repo. For the version, use the first release version created in the above steps. By default, Vault is set up with the address in an environment variable. If the previous step was not done, remove the Vault environment variable from your app's template file.
 1. Your app should be deployed.
 1. You can now uncomment the lines that were commented out in the previous step: https://github.com/Banno/template-service/blob/master/Jenkinsfile#L8-L17
 1. Make sure everything locally in your project is committed and pushed to the repository.
