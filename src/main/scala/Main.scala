@@ -29,7 +29,8 @@ object Main extends ProcessApp {
   def process(args: List[String]) =
     (for {
       c0   <- Process.eval(loadConfig)
-      c    <- Process.eval(addVaultSecretsToConfig(c0))
+      // c    <- Process.eval(addVaultSecretsToConfig(c0))
+      c    =  c0
       mr   =  new MetricRegistry()
       srvc =  service(mr)
       trns <- Process.bracket(transactor(c.postgres.password, c.postgres)) { t =>
@@ -68,11 +69,12 @@ object Main extends ProcessApp {
   def updateConfigWithVaultSecrets(config: ServiceConfig): Task[ServiceConfig] = {
     for {
       vaultClient <- createVaultClient(config.vault)
-      postgresCreds <- Task.fromDisjunction { vaultClient.readPath(config.vault.postgresCredsPath).toDisjunction }
-      username <- Task.fromDisjunction { postgresCreds.get("username") \/> NoPostgresUsername }
-      password <- Task.fromDisjunction { postgresCreds.get("password") \/> NoPostgresPassword }
+      // postgresCreds <- Task.fromDisjunction { vaultClient.readPath(config.vault.postgresCredsPath).toDisjunction }
+      // username <- Task.fromDisjunction { postgresCreds.get("username") \/> NoPostgresUsername }
+      // password <- Task.fromDisjunction { postgresCreds.get("password") \/> NoPostgresPassword }
     } yield {
-      config.copy(postgres = config.postgres.copy(username = username, password = password))
+      config
+      // config.copy(postgres = config.postgres.copy(username = username, password = password))
     }
   }
 
@@ -98,9 +100,9 @@ object Main extends ProcessApp {
       val metricRegistry: MetricRegistry = registry
     }
 
-    def dbIsAlive: Task[Unit] = sql"SELECT 1".query[Int].option.transact(transactor).void
+    // def dbIsAlive: Task[Unit] = sql"SELECT 1".query[Int].option.transact(transactor).void
 
-    health.check("postgres-is-alive", true)(dbIsAlive.unsafePerformSync)
+    // health.check("postgres-is-alive", true)(dbIsAlive.unsafePerformSync)
 
     health.checkVM()
     health.checkHighLoggedErrorRate()
