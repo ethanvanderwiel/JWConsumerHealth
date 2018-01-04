@@ -18,13 +18,11 @@ This service is the minimum requirements for getting a service deployed on marat
 1. Find/replace all occurences of `template-service` with your app's name.
 1. Find/replace all occurences of `com.banno.template` with whatever you want your package named.
 1. Verify that `template-service`, `template`, and `pupper` don't exist anywhere in your project.
-1. At this point there is a small chicken and egg problem, to get around that, comment out these lines in your copied Jenkinsfile: https://github.com/Banno/template-service/blob/master/Jenkinsfile#L8-L17
 1. Create a new repository on github and push up your project.
 1. Follow the steps below to [set up Jenkins for your new project](#setting-up-jenkins-for-your-new-project).
 1. Your app should have its first release.
 1. Refer to [Marathon configuration setup docs](https://github.com/Banno/environments/blob/master/docs/marathon-app-setup.md) for setting up your app in the environments repo. For the version, use the first release version created in the above steps.
 1. Your app should be deployed.
-1. You can now uncomment the lines that were commented out in the previous step: https://github.com/Banno/template-service/blob/master/Jenkinsfile#L8-L17
 1. Make sure everything locally in your project is committed and pushed to the repository.
 1. As your application is deployed through the environments you can [add nagios checks](https://github.com/banno/nagios-config#adding-checks-for-a-new-service) to be notified when the app is unhealthy.
 1. If your app needs to use Vault, follow the steps bloew to [set up Vault in your service](#setting-up-vault-for-your-new-project).
