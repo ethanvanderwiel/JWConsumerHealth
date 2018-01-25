@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false" debug="false">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
+        <encoder>
+            <pattern>[%thread] %highlight(%-5level) %cyan(%logger{15}) - %msg %n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- This is a Stdout Encoder For When we have Stdout Logging-->
+    <appender name="stdoutLogstash" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>
+                {
+                "app_name":"template-service",
+                "env" : {
+                "mesos_task_id": "${MESOS_TASK_ID}",
+                "marathon_app_id": "${MARATHON_APP_ID}",
+                "marathon_app_version": "${MARATHON_APP_VERSION}"
+                }
+                }
+            </customFields>
+        </encoder>
+    </appender>
+
+    <logger name="com.banno" level="INFO"/>
+
+    <root level="ERROR">
+        <appender-ref ref="stdoutLogstash"/>
+    </root>
+
+</configuration>
