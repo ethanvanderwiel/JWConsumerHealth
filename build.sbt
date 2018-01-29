@@ -2,20 +2,20 @@
 val catsV = "1.0.1"
 val kittensV = "1.0.0-RC2"
 val catsEffectV = "0.8"
-val fs2V = "0.10.0-M11"
-val http4sV = "0.18.0-M8"
-val circeV = "0.9.0"
-val doobieV = "0.5.0-M12"
+val fs2V = "0.10.0-RC2"
+val http4sV = "0.18.0-M9"
+val circeV = "0.9.1"
+val doobieV = "0.5.0-M14"
 val pureConfigV = "0.9.0"
 // Java
 val flyWayV = "5.0.5"
 val logbackClassicV = "1.2.3"
 val logstashEncoderV = "4.11"
-val dropwizardMetricsV = "3.1.4"
-val prometheusClientV = "0.0.26"
+val dropwizardMetricsV = "4.0.2"
+val prometheusClientV = "0.2.0"
 // Banno
-val vault4sV = "1.4.0"
-val zookeeperV = "1.11.0"
+val vault4sV = "1.6.0"
+val zookeeperV = "1.12.0"
 
 lazy val `template-service` =
   project.in(file("."))
@@ -72,7 +72,6 @@ lazy val commonSettings = Seq(
     "io.prometheus"               % "simpleclient_graphite_bridge"  % prometheusClientV,
 
     "org.tpolecat"                %% "doobie-specs2"                % doobieV   % Test,
-
 
     "org.specs2"                  %% "specs2-core"                  % "4.0.1"       % Test,
     "org.specs2"                  %% "specs2-scalacheck"            % "4.0.1"       % Test,
