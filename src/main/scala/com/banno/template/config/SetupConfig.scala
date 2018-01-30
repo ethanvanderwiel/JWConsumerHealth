@@ -33,7 +33,7 @@ private[config] object SetupConfig {
       for {
         token <- Vault.login[F](C, v.address)(v.roleId)(F)
         credentialsE <- Vault
-          .readSecret[F, DynamicCredentials](C, v.address)(token.clientToken, v.postgresPasswordPath)
+          .readSecret[F, DynamicCredentials](C, v.address)(token.clientToken, v.postgresCredsPath)
           .attempt
         credentials <- credentialsE.fold(
           e => F.delay(logger.error(e)("Failed To Get Expected Credentials")) >> F.raiseError[DynamicCredentials](e),

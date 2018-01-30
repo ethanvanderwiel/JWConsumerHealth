@@ -32,7 +32,7 @@ private[config] object Configurations {
   case class VaultConfig(
       address: String,
       roleId: String,
-      postgresPasswordPath: String
+      postgresCredsPath: String
   )
 
   case class ZookeeperConfig(
