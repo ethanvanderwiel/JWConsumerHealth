@@ -60,6 +60,7 @@ This service is the minimum requirements for getting a service deployed on marat
       Process.eval_(unregisterFromServiceDiscovery)
   }
 ```
+
 1. Open a PR with the changes to be reviewed and released.
 
 ### Setting up Postgres for your new project
