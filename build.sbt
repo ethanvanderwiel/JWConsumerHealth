@@ -1,21 +1,20 @@
 // Scala
-val catsV = "1.0.1"
-val kittensV = "1.0.0-RC2"
-val catsEffectV = "0.8"
-val fs2V = "0.10.0-RC2"
-val http4sV = "0.18.0-M9"
-val circeV = "0.9.1"
-val doobieV = "0.5.0-M14"
-val pureConfigV = "0.9.0"
+val catsV = "1.1.0"
+val catsEffectV = "0.10"
+val fs2V = "0.10.3"
+val http4sV = "0.18.4"
+val circeV = "0.9.2"
+val doobieV = "0.5.1"
+val pureConfigV = "0.9.1"
+val specs2V = "4.0.3"
 // Java
-val flyWayV = "5.0.5"
+val flyWayV = "5.0.7"
 val logbackClassicV = "1.2.3"
 val logstashEncoderV = "4.11"
 val dropwizardMetricsV = "4.0.2"
-val prometheusClientV = "0.2.0"
 // Banno
-val vault4sV = "1.6.0"
-val zookeeperV = "1.12.0"
+val vault4sV = "3.1.0"
+val zookeeperV = "1.18.0"
 
 lazy val `template-service` =
   project.in(file("."))
@@ -43,7 +42,6 @@ lazy val commonSettings = Seq(
     "com.banno"                   %% "zookeeper"                    % zookeeperV,
 
     "org.typelevel"               %% "cats-core"                    % catsV,
-    "org.typelevel"               %% "kittens"                      % kittensV,
     "org.typelevel"               %% "cats-effect"                  % catsEffectV,
     "co.fs2"                      %% "fs2-io"                       % fs2V,
     "org.http4s"                  %% "http4s-dsl"                   % http4sV,
@@ -66,15 +64,11 @@ lazy val commonSettings = Seq(
     "io.dropwizard.metrics"       % "metrics-graphite"              % dropwizardMetricsV,
     "io.dropwizard.metrics"       % "metrics-healthchecks"          % dropwizardMetricsV,
     "io.dropwizard.metrics"       % "metrics-json"                  % dropwizardMetricsV,
-    "io.prometheus"               % "simpleclient_common"           % prometheusClientV,
-    "io.prometheus"               % "simpleclient_hotspot"          % prometheusClientV,
-    "io.prometheus"               % "simpleclient_dropwizard"       % prometheusClientV,
-    "io.prometheus"               % "simpleclient_graphite_bridge"  % prometheusClientV,
 
     "org.tpolecat"                %% "doobie-specs2"                % doobieV   % Test,
 
-    "org.specs2"                  %% "specs2-core"                  % "4.0.1"       % Test,
-    "org.specs2"                  %% "specs2-scalacheck"            % "4.0.1"       % Test,
+    "org.specs2"                  %% "specs2-core"                  % specs2V      % Test,
+    "org.specs2"                  %% "specs2-scalacheck"            % specs2V       % Test,
     "org.typelevel"               %% "discipline"                   % "0.8"         % Test,
     "com.github.alexarchambault"  %% "scalacheck-shapeless_1.13"    % "1.1.6"       % Test
   )

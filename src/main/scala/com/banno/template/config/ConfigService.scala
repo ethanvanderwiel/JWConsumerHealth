@@ -1,12 +1,14 @@
 package com.banno.template.config
 
-import cats.effect.Effect
+import cats.effect._
 import fs2._
 import com.banno.template.migrations.Migrations
 import com.banno.zookeeper.Zookeeper
 import com.banno.zookeeper.{ServiceDiscovery => SD}
 import com.banno.zookeeper.tagless.ServiceDiscovery
 import doobie.util.transactor.Transactor
+import java.net.InetAddress
+import scala.concurrent.ExecutionContext
 import org.http4s.client.Client
 import org.http4s.client.blaze.Http1Client
 import org.http4s.server.blaze.BlazeBuilder
@@ -23,14 +25,15 @@ trait ConfigService[F[_]] {
 
 object ConfigService {
 
-  def impl[F[_]](implicit Effect: Effect[F]): Stream[F, ConfigService[F]] =
+  def impl[F[_]](implicit Effect: Effect[F], S: Scheduler, ec: ExecutionContext): Stream[F, ConfigService[F]] =
     for {
       initConfig <- Stream.eval(SetupConfig.loadConfig[F])
       client <- Http1Client.stream[F]()
       curator <- Zookeeper.stream(Zookeeper.fromConnectString(initConfig.zookeeper.quorum))
-      address <- Stream.eval(InetAddressConfig.getValidAddressOrFail[F])
-      hostname <- Stream.eval(InetAddressConfig.getHostname[F])
-      updatedDbConfig <- Stream.eval(SetupConfig.loadPostgresConfig[F](initConfig.postgres, initConfig.vault)(Effect, client))
+      hostname <- Stream.eval(Sync[F].delay{
+        sys.env.get("HOST").orElse(sys.env.get("HOSTNAME")).getOrElse(InetAddress.getLocalHost.getHostName)
+      })
+      updatedDbConfig <- SetupConfig.loadPostgresConfig[F](initConfig.postgres, initConfig.vault)(Effect, client, S, ec)
     } yield
       new ConfigService[F] {
         override def primaryHttpServer: BlazeBuilder[F] =
@@ -47,7 +50,7 @@ object ConfigService {
           initConfig.registration.name,
           initConfig.http.port,
           None,
-          Some(address.getHostAddress),
+          None,
           hostname,
           ""
         )

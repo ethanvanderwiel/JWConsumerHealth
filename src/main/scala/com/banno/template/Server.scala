@@ -18,22 +18,20 @@ object Server {
 
   def serve[F[_]](implicit Effect: Effect[F], EC: ExecutionContext): Stream[F, StreamApp.ExitCode] =
     for {
-
-      configService <- ConfigService.impl[F]
+      Scheduler <- Scheduler(10)
+      configService <- ConfigService.impl[F](Effect, Scheduler, EC)
       _ = configService.httpClient // TODO: Use HttpClient
       _ <- configService.serviceDiscovery // TODO: Use Service Discovery
       _ <- configService.transactor // TODO: Use Transactor
 //      _ <- Stream.eval(configService.runMigrations) // TODO: Uncomment When You Have Migrations
 
-      healthMR <- Stream.eval(async.refOf(new MetricRegistry()))
+      // Mutable State Ball - Use with care
+      metricRegistry = new MetricRegistry()
+      metricsService = Metrics.service[F](metricRegistry)
 
-      healthService <- Stream.eval(healthMR.get)
-        .map(MetricsMiddleware(_, "com.banno.template.health")(Effect)(Health.service[F]))
+      healthService = MetricsMiddleware(metricRegistry, "com.banno.template.health")(Effect)(Health.service[F])
       adminService = Admin.service[F]
 
-      // This is where you pass in the Metric Registries Used With Any Services
-      metricsService <- Stream.eval(healthMR.get)
-        .evalMap(mr => Metrics.setupMetricsService[F](List(mr)))
 
       _ <- configService.registerInstance
       exitCode <- Stream(
