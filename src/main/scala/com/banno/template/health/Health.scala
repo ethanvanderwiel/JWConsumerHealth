@@ -9,7 +9,7 @@ import cats.implicits._
 object Health {
 
   def service[F[_]](implicit F: Sync[F]): HttpService[F] = {
-    object dsl extends Http4sDsl[F]
+    val dsl = new Http4sDsl[F]{}
     import dsl._
 
     // Always True - This can eventually take services and enhance this Check

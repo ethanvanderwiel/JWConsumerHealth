@@ -10,7 +10,7 @@ import org.http4s.dsl.Http4sDsl
 object Metrics {
 
   def service[F[_]](metricRegistry: MetricRegistry)(implicit F: Sync[F]): HttpService[F] = {
-    object dsl extends Http4sDsl[F]
+    val dsl = new Http4sDsl[F]{}
     import dsl._
 
     HttpService[F] {

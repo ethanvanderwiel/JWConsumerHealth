@@ -8,7 +8,7 @@ import org.http4s.dsl.Http4sDsl
 object Admin {
 
   def service[F[_]](implicit F: Sync[F]): HttpService[F] = {
-    object dsl extends Http4sDsl[F]
+    val dsl = new Http4sDsl[F]{}
     import dsl._
 
     HttpService[F] {
