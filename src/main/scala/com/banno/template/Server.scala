@@ -19,11 +19,11 @@ object Server {
   def serve[F[_]](implicit Effect: Effect[F], EC: ExecutionContext): Stream[F, StreamApp.ExitCode] =
     for {
       Scheduler <- Scheduler(10)
-      configService <- ConfigService.impl[F](Effect, Scheduler, EC)
+      configService <- ConfigService.impl[F](Effect/*, Scheduler, EC*/)
       _ = configService.httpClient // TODO: Use HttpClient
       _ <- configService.serviceDiscovery // TODO: Use Service Discovery
-      _ <- configService.transactor // TODO: Use Transactor
-//      _ <- Stream.eval(configService.runMigrations) // TODO: Uncomment When You Have Migrations
+      // _ <- configService.transactor // TODO: Use Transactor
+      // _ <- Stream.eval(configService.runMigrations) // TODO: Uncomment When You Have Migrations
 
       // Mutable State Ball - Use with care
       metricRegistry = new MetricRegistry()
