@@ -17,7 +17,7 @@ This service is the minimum requirements for getting a service deployed on marat
 1. Copy this repository.
 1. Find/replace all occurences of `template-service` with your app's name.
 1. Find/replace all occurences of `com.banno.template` with whatever you want your package named.
-1. Verify that `template-service`, `template`, and `pupper` don't exist anywhere in your project.
+1. Verify that `template-service`, `template`, and `aviato` don't exist anywhere in your project.
 1. Create a new repository on github and push up your project.
 1. Follow the steps below to [set up Jenkins for your new project](#setting-up-jenkins-for-your-new-project).
 1. Your app should have its first release.
@@ -65,7 +65,7 @@ This service is the minimum requirements for getting a service deployed on marat
 
 ### Setting up Postgres for your new project
 
-Each team has their own Postgres server for their services to use. The beginning of the hostname will be needed. ie for `postgres-pupper0-<dc>.<env>.banno-internal.com` it would be `postgres-pupper`
+Each team has their own Postgres server for their services to use. The beginning of the hostname will be needed. ie for `postgres-aviato0-<dc>.<env>.banno-internal.com` it would be `postgres-aviato`
 
 1. Follow the [Postgres dynamic credentials docs](https://github.com/Banno/environments/blob/master/docs/dynamic-postgres-creds.md) in the environments repo.
 1. Uncomment the Postgres creds addition to the config. The `updateConfigWithVaultSecrets` function in the `Main` object should look like:
