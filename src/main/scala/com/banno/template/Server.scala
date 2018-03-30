@@ -6,8 +6,6 @@ import cats.implicits._
 import com.banno.template.admin.AdminService
 import com.banno.template.admin.AdminService.AdminServiceExports
 import com.banno.template.config.ConfigService
-// import com.banno.template.health.Health
-// import com.banno.template.metrics.Metrics
 import com.codahale.metrics.MetricRegistry
 import org.http4s.server.metrics.{Metrics => MetricsMiddleware}
 
