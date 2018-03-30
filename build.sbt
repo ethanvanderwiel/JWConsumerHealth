@@ -40,6 +40,7 @@ lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
     "com.banno"                   %% "vault4s"                      % vault4sV,
     "com.banno"                   %% "zookeeper"                    % zookeeperV,
+    "com.banno"                   %% "simple-health-dropwizard"     % "0.3.0",
 
     "org.typelevel"               %% "cats-core"                    % catsV,
     "org.typelevel"               %% "cats-effect"                  % catsEffectV,
