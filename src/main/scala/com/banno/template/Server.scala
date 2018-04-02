@@ -3,10 +3,9 @@ package com.banno.template
 import fs2._
 import cats.effect.Effect
 import cats.implicits._
-import com.banno.template.admin.Admin
+import com.banno.template.admin.AdminService
+import com.banno.template.admin.AdminService.AdminServiceExports
 import com.banno.template.config.ConfigService
-import com.banno.template.health.Health
-import com.banno.template.metrics.Metrics
 import com.codahale.metrics.MetricRegistry
 import org.http4s.server.metrics.{Metrics => MetricsMiddleware}
 
@@ -27,19 +26,17 @@ object Server {
 
       // Mutable State Ball - Use with care
       metricRegistry = new MetricRegistry()
-      metricsService = Metrics.service[F](metricRegistry)
 
-      healthService = MetricsMiddleware(metricRegistry, "com.banno.template.health")(Effect)(Health.service[F])
-      adminService = Admin.service[F]
-
+      AdminServiceExports(adminService, httpAdminService) = AdminService.service[F](metricRegistry)
+      httpService = MetricsMiddleware(metricRegistry, "com.banno.template.health")(Effect)(httpAdminService)
 
       _ <- configService.registerInstance
       exitCode <- Stream(
         configService.primaryHttpServer
-          .mountService(healthService, "/")
+          .mountService(httpService, "/")
           .serve,
         configService.administrativeHttpServer
-          .mountService(healthService <+> metricsService <+> adminService, "/")
+          .mountService(adminService, "/")
           .serve
       )
         .join(2)
