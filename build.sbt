@@ -35,12 +35,12 @@ lazy val commonSettings = Seq(
 
   cancelable in Scope.Global := true,
 
-  addCompilerPlugin("org.spire-math" % "kind-projector" % "0.9.4" cross CrossVersion.binary),
+  addCompilerPlugin("org.spire-math" % "kind-projector" % "0.9.6" cross CrossVersion.binary),
 
   libraryDependencies ++= Seq(
     "com.banno"                   %% "vault4s"                      % vault4sV,
     "com.banno"                   %% "zookeeper"                    % zookeeperV,
-    "com.banno"                   %% "simple-health-dropwizard"     % "0.3.0",
+    "com.banno"                   %% "simple-health-dropwizard"     % "0.5.0",
 
     "org.typelevel"               %% "cats-core"                    % catsV,
     "org.typelevel"               %% "cats-effect"                  % catsEffectV,

@@ -8,7 +8,8 @@ import com.banno.zookeeper.{ServiceDiscovery => SD}
 import com.banno.zookeeper.tagless.ServiceDiscovery
 import doobie.util.transactor.Transactor
 import java.net.InetAddress
-// import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext
+import com.codahale.metrics._
 import org.http4s.client.Client
 import org.http4s.client.blaze.Http1Client
 import org.http4s.server.blaze.BlazeBuilder
@@ -21,11 +22,12 @@ trait ConfigService[F[_]] {
   def transactor: Stream[F, Transactor[F]]
   def registerInstance: Stream[F, Unit]
   def runMigrations: F[Unit]
+  def graphiteRegistry: Stream[F, MetricRegistry]
 }
 
 object ConfigService {
 
-  def impl[F[_]](implicit Effect: Effect[F]/*, S: Scheduler, ec: ExecutionContext*/): Stream[F, ConfigService[F]] =
+  def impl[F[_]](implicit Effect: Effect[F], ec: ExecutionContext/*, S: Scheduler*/): Stream[F, ConfigService[F]] =
     for {
       initConfig <- Stream.eval(SetupConfig.loadConfig[F])
       client <- Http1Client.stream[F]()
@@ -62,6 +64,8 @@ object ConfigService {
         // override def runMigrations: F[Unit] =
         //   Migrations.makeMigrations[F](updatedDbConfig.jdbcUrl, updatedDbConfig.username, updatedDbConfig.password)
         override def runMigrations: F[Unit] = ???
+        def graphiteRegistry: Stream[F, MetricRegistry] = 
+          SetupConfig.createAndRegisterMetricRegistry[F](initConfig.graphite, hostname)
       }
 
 }

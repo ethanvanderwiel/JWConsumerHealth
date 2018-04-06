@@ -12,10 +12,12 @@ import org.http4s._
 import org.http4s.client.Client
 import org.http4s.client.middleware._
 import com.banno.vault.Vault
+import com.banno.simplehealth.dropwizard.graphite._
 import io.circe.Decoder
 import io.circe.generic.semiauto.deriveDecoder
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
+import com.codahale.metrics._
 
 
 private[config] object SetupConfig {
@@ -80,6 +82,31 @@ private[config] object SetupConfig {
     final case class DynamicCredentials(username: String, password: String)
     object DynamicCredentials {
       implicit val dynCredDecoder: Decoder[DynamicCredentials] = deriveDecoder[DynamicCredentials]
+    }
+
+
+
+    def createAndRegisterMetricRegistry[F[_]: Effect](g: GraphiteConfig, hostname: String)(implicit ec: ExecutionContext): Stream[F, MetricRegistry] = {
+      val mr = new MetricRegistry()
+
+      val prefix = g.prefix.trim
+      val identifier = g.identifier.filter(_.nonEmpty).getOrElse(com.banno.BuildInfo.name).trim
+      val instanceIdentifier = g.instanceIdentifier.filter(_.nonEmpty).getOrElse(hostname).replace(".", "-")
+      val metricsIdentifer = List(prefix, identifier, instanceIdentifier).filter(_.nonEmpty).mkString(".")
+
+      val graphiteReporter: Stream[F, Unit] = 
+        Alternative[Option].guard(g.enabled).fold(
+          Stream.eval(Sync[F].delay(logger.info("Setup of graphite reporter skipped due to graphite.enabled.")))
+        )(_ => 
+          Stream.eval(Sync[F].delay(logger.info("Setting up of graphite reporter"))).drain ++
+          GraphiteBridge.pushEvery(mr, g.host, g.port, metricsIdentifer, 1.minute)
+        )
+
+      Stream(mr)
+        .covary[F]
+        .concurrently(
+          graphiteReporter
+        )
     }
 
 }
