@@ -93,14 +93,17 @@ private[config] object SetupConfig {
       val identifier = g.identifier.filter(_.nonEmpty).getOrElse(com.banno.BuildInfo.name).trim
       val instanceIdentifier = g.instanceIdentifier.filter(_.nonEmpty).getOrElse(hostname).replace(".", "-")
       val metricsIdentifier = List(prefix, identifier, instanceIdentifier).filter(_.nonEmpty).mkString(".")
+      val reportEvery = 1.minute
 
       val graphiteReporter: Stream[F, Nothing] = 
         Alternative[Option].guard(g.enabled).fold(
           Stream.eval(Sync[F].delay(logger.info("Setup of graphite reporter skipped due to graphite.enabled.")))
         )(_ => 
-          Stream.eval(Sync[F].delay(logger.info("Setting up of graphite reporter"))).drain ++
+          Stream.eval(Sync[F].delay(
+            logger.info(s"Setting up of graphite reporter- host: ${g.host}, port: ${g.port}, metricsIdentifier: ${metricsIdentifier}, reportEvery:${reportEvery}")
+          )).drain ++
           Stream.bracket(
-              GraphiteBridge.buildPushEvery(mr, g.host, g.port, metricsIdentifier, 1.minute)
+              GraphiteBridge.buildPushEvery(mr, g.host, g.port, metricsIdentifier, reportEvery)
             )(_.pure[Stream[F, ?]].void, reporter => 
             Sync[F].delay("Shutting Down graphite reporter") >> Sync[F].delay(reporter.stop)
             )
