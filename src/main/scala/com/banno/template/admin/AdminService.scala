@@ -22,7 +22,7 @@ object AdminService {
   def service[F[_]: Effect](mr: MetricRegistry)(implicit ec: ExecutionContext): AdminServiceExports[F] = {
     implicit val healthChecker : HealthChecker[F] = HealthChecker.impl[F](HealthChecks.checks[F])
     implicit val metricsResp : MetricsResponse[F] = DropWizardMetrics.impl[F](mr)
-    implicit val buildInfo : BuildInfo[F] = com.banno.simplehealth.BuildInfo.impl[F](
+    implicit val buildInfo : SimpleBuildInfo[F] = com.banno.simplehealth.SimpleBuildInfo.impl[F](
       com.banno.BuildInfo.name,
       com.banno.BuildInfo.version,
       com.banno.BuildInfo.scalaVersion,
@@ -47,8 +47,10 @@ object AdminService {
   } 
 
   object HealthChecks {
-    def checks[F[_]: Applicative]: List[HealthCheck[F]] = List(
-      basicAvailablility[F]
+    def checks[F[_]: Sync]: List[HealthCheck[F]] = List(
+      basicAvailablility[F],
+      dropwizard.checks.deadlockedThreads[F]
+
     )
     private def basicAvailablility[F[_]: Applicative]: HealthCheck[F] = HealthCheck[F]("service-is-up", true.pure[F])
 
