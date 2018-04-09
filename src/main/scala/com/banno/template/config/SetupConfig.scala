@@ -106,15 +106,8 @@ private[config] object SetupConfig {
           GraphiteBridge.buildPushEvery(mr, g.host, g.port, metricsIdentifier, reportEvery).map(_.some)
         )
 
-        Stream.bracket(graphiteReporter)(
-          _.pure[Stream[F, ?]],
-          _.fold(
-            Sync[F].delay(logger.info("Shutdown of graphite reporter skipped due to graphite.enabled."))
-          )(reporter => 
-            Sync[F].delay(logger.info("Shutting Down graphite reporter")) *>
-            Sync[F].delay(reporter.stop)
-          )
-        ).as(mr)
+        Stream.eval(graphiteReporter)
+          .as(mr)
     }
 
 }
