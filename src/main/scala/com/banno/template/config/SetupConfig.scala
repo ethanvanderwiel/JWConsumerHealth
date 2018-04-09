@@ -18,7 +18,7 @@ import io.circe.generic.semiauto.deriveDecoder
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 import com.codahale.metrics._
-
+import com.codahale.metrics.graphite.GraphiteReporter
 
 private[config] object SetupConfig {
 
@@ -86,7 +86,7 @@ private[config] object SetupConfig {
 
 
 
-    def createAndRegisterMetricRegistry[F[_]: Effect](g: GraphiteConfig, hostname: String)(implicit ec: ExecutionContext): Stream[F, MetricRegistry] = {
+    def createAndRegisterMetricRegistry[F[_]: Effect](g: GraphiteConfig, hostname: String): Stream[F, MetricRegistry] = {
       val mr = new MetricRegistry()
 
       val prefix = g.prefix.trim
@@ -95,23 +95,26 @@ private[config] object SetupConfig {
       val metricsIdentifier = List(prefix, identifier, instanceIdentifier).filter(_.nonEmpty).mkString(".")
       val reportEvery = 1.minute
 
-      val graphiteReporter: Stream[F, Nothing] = 
+      val graphiteReporter: F[Option[GraphiteReporter]] = 
         Alternative[Option].guard(g.enabled).fold(
-          Stream.eval(Sync[F].delay(logger.info("Setup of graphite reporter skipped due to graphite.enabled.")))
+          Sync[F].delay(logger.info("Setup of graphite reporter skipped due to graphite.enabled."))
+          .as(Option.empty[GraphiteReporter])
         )(_ => 
-          Stream.eval(Sync[F].delay(
+          Sync[F].delay(
             logger.info(s"Setting up of graphite reporter- host: ${g.host}, port: ${g.port}, metricsIdentifier: ${metricsIdentifier}, reportEvery:${reportEvery}")
-          )).drain ++
-          Stream.bracket(
-              GraphiteBridge.buildPushEvery(mr, g.host, g.port, metricsIdentifier, reportEvery)
-            )(_.pure[Stream[F, ?]].void, reporter => 
-            Sync[F].delay("Shutting Down graphite reporter") >> Sync[F].delay(reporter.stop)
-            )
-        ).drain
+          ) *>
+          GraphiteBridge.buildPushEvery(mr, g.host, g.port, metricsIdentifier, reportEvery).map(_.some)
+        )
 
-      Stream(mr)
-        .covary[F]
-        .concurrently(graphiteReporter)
+        Stream.bracket(graphiteReporter)(
+          _.pure[Stream[F, ?]],
+          _.fold(
+            Sync[F].delay(logger.info("Shutdown of graphite reporter skipped due to graphite.enabled."))
+          )(reporter => 
+            Sync[F].delay(logger.info("Shutting Down graphite reporter")) *>
+            Sync[F].delay(reporter.stop)
+          )
+        ).as(mr)
     }
 
 }
