@@ -4,9 +4,9 @@ import cats._
 import cats.implicits._
 import cats.effect._
 import com.banno.simplehealth._
-import com.banno.simplehealth.dropwizard._
+import com.banno.simplehealth.prometheus.PrometheusMetricsResponse
 import com.banno.simplehealth.HealthChecker._
-import com.codahale.metrics._
+import io.prometheus.client.CollectorRegistry
 import org.http4s._
 import org.http4s.dsl._
 import scala.concurrent.ExecutionContext
@@ -19,9 +19,9 @@ object AdminService {
     * Using a core set of these building blocks you can build as many checks
     * as necessary to deliver proper health responses for your service.
     */
-  def service[F[_]: Effect](mr: MetricRegistry)(implicit ec: ExecutionContext): AdminServiceExports[F] = {
+  def service[F[_]: Effect](cr: CollectorRegistry)(implicit ec: ExecutionContext): AdminServiceExports[F] = {
     implicit val healthChecker : HealthChecker[F] = HealthChecker.impl[F](HealthChecks.checks[F])
-    implicit val metricsResp : MetricsResponse[F] = DropWizardMetrics.impl[F](mr)
+    implicit val metricsResp : MetricsResponse[F] = PrometheusMetricsResponse.impl[F](cr)
     implicit val buildInfo : SimpleBuildInfo[F] = com.banno.simplehealth.SimpleBuildInfo.impl[F](
       com.banno.BuildInfo.name,
       com.banno.BuildInfo.version,
