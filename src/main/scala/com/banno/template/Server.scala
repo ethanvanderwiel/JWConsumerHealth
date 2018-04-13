@@ -11,7 +11,7 @@ import com.codahale.metrics.MetricRegistry
 import _root_.io.prometheus.client.CollectorRegistry
 import org.http4s._
 import org.http4s.server.metrics.{Metrics => DropwizardMetrics}
-import org.http4s.server.prometheus.PrometheusMetrics
+import org.http4s.server.prometheus.{PrometheusMetrics, PrometheusExportService}
 
 import scala.concurrent.ExecutionContext
 
@@ -29,6 +29,7 @@ object Server {
       // _ <- configService.transactor // TODO: Use Transactor
       // _ <- Stream.eval(configService.runMigrations) // TODO: Uncomment When You Have Migrations
       cr = new CollectorRegistry() // Currently Doesnt Need any config options
+      _ <- Stream.eval(PrometheusExportService.addDefaults[F](cr))
 
       _ <- Stream.eval(addAllMetrics[F](metricRegistry))
       AdminServiceExports(adminService, httpAdminService) = AdminService.service[F](cr)
