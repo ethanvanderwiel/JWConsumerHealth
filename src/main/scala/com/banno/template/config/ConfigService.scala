@@ -5,7 +5,7 @@ import fs2._
 // import com.banno.template.migrations.Migrations
 import com.banno.zookeeper.Zookeeper
 import com.banno.zookeeper.{ServiceDiscovery => SD}
-import com.banno.zookeeper.tagless.ServiceDiscovery
+import com.banno.zookeeper.http4s.HttpServiceDiscovery
 import doobie.util.transactor.Transactor
 import java.net.InetAddress
 // import scala.concurrent.ExecutionContext
@@ -17,7 +17,7 @@ trait ConfigService[F[_]] {
   def primaryHttpServer: BlazeBuilder[F]
   def administrativeHttpServer: BlazeBuilder[F]
   def httpClient : Client[F]
-  def serviceDiscovery: Stream[F, ServiceDiscovery[F]]
+  def serviceDiscovery: Stream[F, HttpServiceDiscovery[F]]
   def transactor: Stream[F, Transactor[F]]
   def registerInstance: Stream[F, Unit]
   def runMigrations: F[Unit]
@@ -43,7 +43,9 @@ object ConfigService {
         override def administrativeHttpServer: BlazeBuilder[F] =
           BlazeBuilder[F](Effect).bindHttp(initConfig.health.port, "0.0.0.0")
         override def httpClient: Client[F] = client
-        override def serviceDiscovery: Stream[F, ServiceDiscovery[F]] = ServiceDiscovery.fromCuratorFramework(curator)
+        // If you need the full DiscoveredServiceInstance instead use
+        // com.banno.zookeeper.tagless.ServiceDiscovery
+        override def serviceDiscovery: Stream[F, HttpServiceDiscovery[F]] = HttpServiceDiscovery.fromCuratorFramework(curator)
         // Uncomment Below to Load Transactor Correctly
         // override def transactor: Stream[F, Transactor[F]] = SetupConfig.loadConfigTransactor[F](updatedDbConfig)
         override def transactor: Stream[F, Transactor[F]] = ??? 
