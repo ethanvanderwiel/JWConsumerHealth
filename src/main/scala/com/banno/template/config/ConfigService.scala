@@ -9,7 +9,6 @@ import com.banno.zookeeper.http4s.HttpServiceDiscovery
 import doobie.util.transactor.Transactor
 import java.net.InetAddress
 // import scala.concurrent.ExecutionContext
-import com.codahale.metrics._
 import org.http4s.client.Client
 import org.http4s.client.blaze.Http1Client
 import org.http4s.server.blaze.BlazeBuilder
@@ -22,7 +21,6 @@ trait ConfigService[F[_]] {
   def transactor: Stream[F, Transactor[F]]
   def registerInstance: Stream[F, Unit]
   def runMigrations: F[Unit]
-  def graphiteRegistry: Stream[F, MetricRegistry]
 }
 
 object ConfigService {
@@ -66,8 +64,6 @@ object ConfigService {
         // override def runMigrations: F[Unit] =
         //   Migrations.makeMigrations[F](updatedDbConfig.jdbcUrl, updatedDbConfig.username, updatedDbConfig.password)
         override def runMigrations: F[Unit] = ???
-        def graphiteRegistry: Stream[F, MetricRegistry] = 
-          SetupConfig.createAndRegisterMetricRegistry[F](initConfig.graphite, hostname)
       }
 
 }
