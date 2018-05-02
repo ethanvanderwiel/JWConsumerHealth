@@ -48,9 +48,7 @@ object AdminService {
 
   object HealthChecks {
     def checks[F[_]: Sync]: List[HealthCheck[F]] = List(
-      basicAvailablility[F],
-      dropwizard.checks.deadlockedThreads[F]
-
+      basicAvailablility[F]
     )
     private def basicAvailablility[F[_]: Applicative]: HealthCheck[F] = HealthCheck[F]("service-is-up", true.pure[F])
 
