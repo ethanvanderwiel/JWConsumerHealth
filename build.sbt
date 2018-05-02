@@ -14,7 +14,7 @@ val logstashEncoderV = "4.11"
 val dropwizardMetricsV = "4.0.2"
 // Banno
 val vault4sV = "3.1.0"
-val zookeeperV = "1.18.0"
+val zookeeperV = "1.23.0"
 
 lazy val `template-service` =
   project.in(file("."))
@@ -39,7 +39,7 @@ lazy val commonSettings = Seq(
 
   libraryDependencies ++= Seq(
     "com.banno"                   %% "vault4s"                      % vault4sV,
-    "com.banno"                   %% "zookeeper"                    % zookeeperV,
+    "com.banno"                   %% "zookeeper-http4s"             % zookeeperV,
     "com.banno"                   %% "simple-health-dropwizard"     % "0.6.0",
     "com.banno"                   %% "simple-health-prometheus"     % "0.6.0",
 
