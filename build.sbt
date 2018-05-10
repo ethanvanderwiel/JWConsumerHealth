@@ -1,20 +1,20 @@
 // Scala
 val catsV = "1.1.0"
-val catsEffectV = "0.10"
+val catsEffectV = "0.10.1"
 val fs2V = "0.10.3"
-val http4sV = "0.18.9"
-val circeV = "0.9.2"
-val doobieV = "0.5.1"
+val http4sV = "0.18.11"
+val circeV = "0.9.3"
+val doobieV = "0.5.2"
 val pureConfigV = "0.9.1"
-val specs2V = "4.0.3"
+val specs2V = "4.2.0"
 // Java
 val flyWayV = "5.0.7"
 val logbackClassicV = "1.2.3"
 val logstashEncoderV = "4.11"
-val dropwizardMetricsV = "4.0.2"
 // Banno
-val vault4sV = "3.1.0"
+val vault4sV = "3.8.0"
 val zookeeperV = "1.23.0"
+val simpleHealthV = "0.6.0"
 
 lazy val `template-service` =
   project.in(file("."))
@@ -26,22 +26,21 @@ lazy val `template-service` =
 
 lazy val commonSettings = Seq(
   organization := "com.banno",
-  scalaVersion := "2.12.4",
+  scalaVersion := "2.12.6",
 
-  bannoDockerDefaultHeapSize := "128m",
   scalacOptions ++= Seq("-Xmax-classfile-name","242"),
   publishArtifact in ThisBuild := false,
   bannoReleaseGitPushOnlyTag := true,
 
   cancelable in Scope.Global := true,
 
-  addCompilerPlugin("org.spire-math" % "kind-projector" % "0.9.6" cross CrossVersion.binary),
+  addCompilerPlugin("org.spire-math"  % "kind-projector"      % "0.9.6" cross CrossVersion.binary),
+  addCompilerPlugin("com.olegpy"      %% "better-monadic-for" % "0.2.4"),
 
   libraryDependencies ++= Seq(
     "com.banno"                   %% "vault4s"                      % vault4sV,
     "com.banno"                   %% "zookeeper-http4s"             % zookeeperV,
-    "com.banno"                   %% "simple-health-prometheus"     % "0.6.0",
-
+    "com.banno"                   %% "simple-health-prometheus"     % simpleHealthV,
 
     "org.typelevel"               %% "cats-core"                    % catsV,
     "org.typelevel"               %% "cats-effect"                  % catsEffectV,
@@ -61,11 +60,6 @@ lazy val commonSettings = Seq(
     "org.flywaydb"                % "flyway-core"                   % flyWayV,
     "ch.qos.logback"              % "logback-classic"               % logbackClassicV,
     "net.logstash.logback"        % "logstash-logback-encoder"      % logstashEncoderV,
-    "io.dropwizard.metrics"       % "metrics-core"                  % dropwizardMetricsV,
-    "io.dropwizard.metrics"       % "metrics-jvm"                   % dropwizardMetricsV,
-    "io.dropwizard.metrics"       % "metrics-graphite"              % dropwizardMetricsV,
-    "io.dropwizard.metrics"       % "metrics-healthchecks"          % dropwizardMetricsV,
-    "io.dropwizard.metrics"       % "metrics-json"                  % dropwizardMetricsV,
 
     "org.tpolecat"                %% "doobie-specs2"                % doobieV   % Test,
 
