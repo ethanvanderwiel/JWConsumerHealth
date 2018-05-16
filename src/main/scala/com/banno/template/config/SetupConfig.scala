@@ -5,7 +5,6 @@ import cats.implicits._
 import cats.effect.{Effect, Async, Sync}
 import com.typesafe.config.ConfigFactory
 import Configurations._
-import cats.Alternative
 import doobie.hikari.HikariTransactor
 import doobie.util.transactor.Transactor
 import org.http4s._
@@ -31,38 +30,19 @@ private[config] object SetupConfig {
       C: Client[F],
       S: Scheduler,
       ec: ExecutionContext
-  ): Stream[F,PostgresConfig] = {
-
-    val retryC =  Retry[F](RetryPolicy(RetryPolicy.exponentialBackoff(2.seconds, 5)))(C)
-
-    def getFromVault: Stream[F, PostgresConfig] =
+  ): Stream[F,PostgresConfig] =
+    if(v.address.isEmpty)
+      Stream.eval( F.pure(dbConfig))
+    else {
+      val retryC = Retry[F](RetryPolicy(RetryPolicy.exponentialBackoff(2.seconds, 5)))(C)
       for {
         uri <- Uri.fromString(v.address).fold(e => Stream.raiseError[Uri](e), Stream.emit(_)).covary[F]
-        token <- Stream.eval(Vault.login[F](retryC, uri)(v.roleId)(F))
-        credentials <- Stream.eval(
-          Vault.readSecret[F, DynamicCredentials](retryC, uri)(token.clientToken, v.postgresCredsPath)
-        )
-        out <- Stream.emit(dbConfig.copy(username = credentials.data.username, password = credentials.data.password))
-          .concurrently(
-            Stream.eval(Vault.renewSelfToken(retryC, uri)(token, 25.hours)) ++
-            S.fixedDelay(24.hours) >> Stream.eval(Vault.renewSelfToken(retryC, uri)(token, 25.hours))
-          )
-          .concurrently(
-            S.sleep((credentials.renewal.leaseDuration-10).seconds) ++
-            Stream.eval(
-              Sync[F].delay(logger.info(show"Attempting To Do An Initial Renew LeaseId ${credentials.renewal.leaseId}")) *>
-              Vault.renewLease(retryC, uri)(credentials.renewal.leaseId, 25.hours, token.clientToken)
-            ) ++
-            S.fixedDelay(24.hours) >> Stream.eval(
-              Sync[F].delay(logger.info(show"Attempting To Renew LeaseId ${credentials.renewal.leaseId}")) *>
-              Vault.renewLease(retryC, uri)(credentials.renewal.leaseId, 25.hours, token.clientToken)
-            )
-          )
-      } yield out
-
-    Alternative[Option]
-      .guard(!v.address.isEmpty)
-      .fold(dbConfig.pure[Stream[F, ?]])(_ => getFromVault)
+        credentials <- Vault.loginAndKeepSecretLeased[F, DynamicCredentials](retryC, uri)(
+          v.roleId,
+          v postgresCredsPath,
+          v.leaseDuration,
+          v.leaseRenewWait)
+      } yield dbConfig.copy(username = credentials.username, password = credentials.password)
     }
 
   def loadConfigTransactor[F[_]](dbConfig: PostgresConfig)(implicit F: Async[F]): Stream[F, Transactor[F]] =

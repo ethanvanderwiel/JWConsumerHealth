@@ -1,5 +1,7 @@
 package com.banno.template.config
 
+import scala.concurrent.duration._
+
 private[config] object Configurations {
 
   final case class ServiceConfig(
@@ -33,7 +35,9 @@ private[config] object Configurations {
   final case class VaultConfig(
     address: String,
     roleId: String,
-    postgresCredsPath: String
+    postgresCredsPath: String,
+    leaseDuration: FiniteDuration,
+    leaseRenewWait: FiniteDuration
   )
 
   final case class ZookeeperConfig(
