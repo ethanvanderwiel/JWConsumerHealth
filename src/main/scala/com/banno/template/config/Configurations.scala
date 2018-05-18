@@ -11,7 +11,6 @@ private[config] object Configurations {
     registration: Registration,
     postgres: PostgresConfig,
     vault: VaultConfig,
-    graphite: GraphiteConfig
   )
 
   final case class Registration(
@@ -42,15 +41,6 @@ private[config] object Configurations {
 
   final case class ZookeeperConfig(
     quorum: String
-  )
-
-  final case class GraphiteConfig(
-    enabled: Boolean, 
-    prefix: String, 
-    identifier: Option[String], 
-    instanceIdentifier: Option[String], 
-    port: Int, 
-    host: String
   )
 
 }
