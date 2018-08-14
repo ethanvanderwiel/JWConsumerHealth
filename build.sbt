@@ -12,7 +12,7 @@ val flyWayV = "5.0.7"
 val logbackClassicV = "1.2.3"
 val logstashEncoderV = "4.11"
 // Banno
-val vault4sV = "3.9.0"
+val vault4sV = "3.12.0"
 val zookeeperV = "1.23.0"
 val simpleHealthV = "0.6.0"
 
