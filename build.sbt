@@ -1,18 +1,18 @@
 // Scala
-val catsV = "1.1.0"
+val catsV = "1.2.0"
 val catsEffectV = "0.10.1"
 val fs2V = "0.10.3"
-val http4sV = "0.18.11"
+val http4sV = "0.18.16"
 val circeV = "0.9.3"
-val doobieV = "0.5.2"
+val doobieV = "0.5.3"
 val pureConfigV = "0.9.1"
 val specs2V = "4.2.0"
 // Java
-val flyWayV = "5.0.7"
+val flyWayV = "5.1.4"
 val logbackClassicV = "1.2.3"
 val logstashEncoderV = "4.11"
 // Banno
-val vault4sV = "3.12.0"
+val vault4sV = "3.13.0"
 val zookeeperV = "1.23.0"
 val simpleHealthV = "0.6.0"
 
