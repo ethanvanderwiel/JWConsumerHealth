@@ -8,7 +8,7 @@ resolvers ++= Seq(
 )
 
 addSbtPlugin("com.lucidchart" % "sbt-scalafmt" % "1.15")
-addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat" % "0.1.3")
-addSbtPlugin("org.lyranthe.sbt" % "partial-unification" % "1.1.0")
-addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "0.9.3")
+addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat" % "0.1.4")
+addSbtPlugin("org.lyranthe.sbt" % "partial-unification" % "1.1.2")
+addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "1.0.0")
 addSbtPlugin("com.banno" % "banno-sbt-plugin" % "10.1.2")
