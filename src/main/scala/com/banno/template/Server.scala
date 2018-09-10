@@ -7,7 +7,7 @@ import com.banno.template.admin.AdminService
 import com.banno.template.admin.AdminService.AdminServiceExports
 import com.banno.template.config.ConfigService
 import _root_.io.prometheus.client.CollectorRegistry
-import org.http4s.server.prometheus.{PrometheusMetrics, PrometheusExportService}
+import org.http4s.server.prometheus.{PrometheusExportService, PrometheusMetrics}
 
 import scala.concurrent.ExecutionContext
 
@@ -18,7 +18,7 @@ object Server {
   def serve[F[_]](implicit Effect: Effect[F], EC: ExecutionContext): Stream[F, StreamApp.ExitCode] =
     for {
       Scheduler <- Scheduler(10)
-      configService <- ConfigService.impl[F](Effect/*, Scheduler, EC*/)
+      configService <- ConfigService.impl[F](Effect /*, Scheduler, EC*/ )
       _ = configService.httpClient // TODO: Use HttpClient
       _ <- configService.serviceDiscovery // TODO: Use Service Discovery
       // _ <- configService.transactor // TODO: Use Transactor
@@ -37,8 +37,7 @@ object Server {
         configService.administrativeHttpServer
           .mountService(adminService, "/")
           .serve
-      )
-        .join(2)
+      ).join(2)
         .concurrently(
           Stream.eval(Effect.delay(logger.info("template-service has started")))
         )
