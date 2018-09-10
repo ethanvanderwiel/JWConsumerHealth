@@ -21,7 +21,9 @@ lazy val `template-service` =
     .enablePlugins(BannoDockerPlugin)
     .settings(commonSettings)
     .settings(
-      name := "template-service"
+      name := "template-service",
+      scalafmtOnCompile in ThisBuild := true,
+      scalafmtTestOnCompile in ThisBuild := true
     )
 
 lazy val commonSettings = Seq(
