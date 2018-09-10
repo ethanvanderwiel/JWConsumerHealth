@@ -1,8 +1,8 @@
 package com.banno.template.config
 
-import fs2.{Stream, Scheduler}
+import fs2.{Scheduler, Stream}
 import cats.implicits._
-import cats.effect.{Effect, Async, Sync}
+import cats.effect.{Async, Effect, Sync}
 import com.typesafe.config.ConfigFactory
 import Configurations._
 import doobie.hikari.HikariTransactor
@@ -30,9 +30,9 @@ private[config] object SetupConfig {
       C: Client[F],
       S: Scheduler,
       ec: ExecutionContext
-  ): Stream[F,PostgresConfig] =
-    if(v.address.isEmpty)
-      Stream.eval( F.pure(dbConfig))
+  ): Stream[F, PostgresConfig] =
+    if (v.address.isEmpty)
+      Stream.eval(F.pure(dbConfig))
     else {
       val retryC = Retry[F](RetryPolicy(RetryPolicy.exponentialBackoff(2.seconds, 5)))(C)
       for {
@@ -56,9 +56,9 @@ private[config] object SetupConfig {
       )
     } yield transactor
 
-    final case class DynamicCredentials(username: String, password: String)
-    object DynamicCredentials {
-      implicit val dynCredDecoder: Decoder[DynamicCredentials] = deriveDecoder[DynamicCredentials]
-    }
+  final case class DynamicCredentials(username: String, password: String)
+  object DynamicCredentials {
+    implicit val dynCredDecoder: Decoder[DynamicCredentials] = deriveDecoder[DynamicCredentials]
+  }
 
 }

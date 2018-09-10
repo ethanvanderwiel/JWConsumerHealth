@@ -16,7 +16,7 @@ import org.http4s.server.blaze.BlazeBuilder
 trait ConfigService[F[_]] {
   def primaryHttpServer: BlazeBuilder[F]
   def administrativeHttpServer: BlazeBuilder[F]
-  def httpClient : Client[F]
+  def httpClient: Client[F]
   def serviceDiscovery: Stream[F, HttpServiceDiscovery[F]]
   def transactor: Stream[F, Transactor[F]]
   def registerInstance: Stream[F, Unit]
@@ -25,12 +25,12 @@ trait ConfigService[F[_]] {
 
 object ConfigService {
 
-  def impl[F[_]](implicit Effect: Effect[F]/*, S: Scheduler , ec: ExecutionContext*/): Stream[F, ConfigService[F]] =
+  def impl[F[_]](implicit Effect: Effect[F] /*, S: Scheduler , ec: ExecutionContext*/ ): Stream[F, ConfigService[F]] =
     for {
       initConfig <- Stream.eval(SetupConfig.loadConfig[F])
       client <- Http1Client.stream[F]()
       curator <- Zookeeper.stream(Zookeeper.fromConnectString(initConfig.zookeeper.quorum))
-      hostname <- Stream.eval(Sync[F].delay{
+      hostname <- Stream.eval(Sync[F].delay {
         sys.env.get("HOST").orElse(sys.env.get("HOSTNAME")).getOrElse(InetAddress.getLocalHost.getHostName)
       })
       // Uncomment the Below To Fetch Dynamic Credentials
@@ -45,10 +45,11 @@ object ConfigService {
         override def httpClient: Client[F] = client
         // If you need the full DiscoveredServiceInstance instead use
         // com.banno.zookeeper.tagless.ServiceDiscovery
-        override def serviceDiscovery: Stream[F, HttpServiceDiscovery[F]] = HttpServiceDiscovery.fromCuratorFramework(curator)
+        override def serviceDiscovery: Stream[F, HttpServiceDiscovery[F]] =
+          HttpServiceDiscovery.fromCuratorFramework(curator)
         // Uncomment Below to Load Transactor Correctly
         // override def transactor: Stream[F, Transactor[F]] = SetupConfig.loadConfigTransactor[F](updatedDbConfig)
-        override def transactor: Stream[F, Transactor[F]] = ??? 
+        override def transactor: Stream[F, Transactor[F]] = ???
         override def registerInstance: Stream[F, Unit] = SD.registerInstanceStreamed(
           curator,
           initConfig.registration.path,
