@@ -34,7 +34,7 @@ lazy val commonSettings = Seq(
   publishArtifact in ThisBuild := false,
   bannoReleaseGitPushOnlyTag := true,
   cancelable in Scope.Global := true,
-  addCompilerPlugin("org.spire-math" % "kind-projector"      % "0.9.7" cross CrossVersion.binary),
+  addCompilerPlugin("org.spire-math" % "kind-projector"      % "0.9.9" cross CrossVersion.binary),
   addCompilerPlugin("com.olegpy"     %% "better-monadic-for" % "0.2.4"),
   libraryDependencies ++= Seq(
     "com.banno"                  %% "vault4s"                   % vault4sV,
