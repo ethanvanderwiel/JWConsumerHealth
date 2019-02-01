@@ -1,5 +1,5 @@
 // Scala
-val catsV = "1.4.0"
+val catsV = "1.6.0"
 val catsEffectV = "0.10.1"
 val fs2V = "0.10.6"
 val http4sV = "0.18.17"
