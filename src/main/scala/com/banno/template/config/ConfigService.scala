@@ -3,9 +3,9 @@ package com.banno.template.config
 import cats.effect._
 import fs2._
 // import com.banno.template.migrations.Migrations
-import com.banno.zookeeper.Zookeeper
-import com.banno.zookeeper.{ServiceDiscovery => SD}
-import com.banno.zookeeper.http4s.HttpServiceDiscovery
+// import com.banno.zookeeper.Zookeeper
+// import com.banno.zookeeper.{ServiceDiscovery => SD}
+// import com.banno.zookeeper.http4s.HttpServiceDiscovery
 import doobie.util.transactor.Transactor
 import java.net.InetAddress
 // import scala.concurrent.ExecutionContext
@@ -17,9 +17,11 @@ trait ConfigService[F[_]] {
   def primaryHttpServer: BlazeBuilder[F]
   def administrativeHttpServer: BlazeBuilder[F]
   def httpClient: Client[F]
-  def serviceDiscovery: Stream[F, HttpServiceDiscovery[F]]
+// uncomment below if you need ZK based service discover should be able to use marathon LB instead
+//  def serviceDiscovery: Stream[F, HttpServiceDiscovery[F]]
   def transactor: Stream[F, Transactor[F]]
-  def registerInstance: Stream[F, Unit]
+// uncomment below if you need ZK based service discover should be able to use marathon LB instead
+//  def registerInstance: Stream[F, Unit]
   def runMigrations: F[Unit]
 }
 
@@ -29,7 +31,8 @@ object ConfigService {
     for {
       initConfig <- Stream.eval(SetupConfig.loadConfig[F])
       client <- Http1Client.stream[F]()
-      curator <- Zookeeper.stream(Zookeeper.fromConnectString(initConfig.zookeeper.quorum))
+      // uncomment below if you need ZK based service discover should be able to use marathon LB instead
+//      curator <- Zookeeper.stream(Zookeeper.fromConnectString(initConfig.zookeeper.quorum))
       hostname <- Stream.eval(Sync[F].delay {
         sys.env.get("HOST").orElse(sys.env.get("HOSTNAME")).getOrElse(InetAddress.getLocalHost.getHostName)
       })
@@ -45,12 +48,14 @@ object ConfigService {
         override def httpClient: Client[F] = client
         // If you need the full DiscoveredServiceInstance instead use
         // com.banno.zookeeper.tagless.ServiceDiscovery
-        override def serviceDiscovery: Stream[F, HttpServiceDiscovery[F]] =
-          HttpServiceDiscovery.fromCuratorFramework(curator)
+        // uncomment below if you need ZK based service discover should be able to use marathon LB instead
+        /*        override def serviceDiscovery: Stream[F, HttpServiceDiscovery[F]] =
+          HttpServiceDiscovery.fromCuratorFramework(curator)*/
         // Uncomment Below to Load Transactor Correctly
         // override def transactor: Stream[F, Transactor[F]] = SetupConfig.loadConfigTransactor[F](updatedDbConfig)
         override def transactor: Stream[F, Transactor[F]] = ???
-        override def registerInstance: Stream[F, Unit] = SD.registerInstanceStreamed(
+        // uncomment below if you need ZK based service discover should be able to use marathon LB instead
+        /*override def registerInstance: Stream[F, Unit] = SD.registerInstanceStreamed(
           curator,
           initConfig.registration.path,
           initConfig.registration.`type`,
@@ -60,7 +65,7 @@ object ConfigService {
           None,
           hostname,
           ""
-        )
+        )*/
         // Uncomment Below to Enable Running Migrations
         // override def runMigrations: F[Unit] =
         //   Migrations.makeMigrations[F](updatedDbConfig.jdbcUrl, updatedDbConfig.username, updatedDbConfig.password)

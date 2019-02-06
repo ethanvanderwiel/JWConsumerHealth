@@ -24,7 +24,7 @@ object AdminService {
   def service[F[_]: Effect](cr: CollectorRegistry)(implicit ec: ExecutionContext): AdminServiceExports[F] = {
 //def service[F[_]: Effect]( cr: CollectorRegistry, xa: Transactor[F])(implicit ec: ExecutionContext): AdminServiceExports[F] = {
     implicit val healthChecker: HealthChecker[F] = HealthChecker.impl[F](HealthChecks.checks[F])
-/*  implicit val healthChecker: HealthChecker[F] = HealthChecker.impl[F](List(
+    /*  implicit val healthChecker: HealthChecker[F] = HealthChecker.impl[F](List(
     HealthChecks.basicAvailablility[F] ++ HealthChecks.database[F](xa)))*/
     implicit val metricsResp: MetricsResponse[F] = PrometheusMetricsResponse.impl[F](cr)
     implicit val buildInfo: SimpleBuildInfo[F] = com.banno.simplehealth.SimpleBuildInfo.impl[F](
