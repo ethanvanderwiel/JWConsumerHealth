@@ -7,16 +7,8 @@ private[config] object Configurations {
   final case class ServiceConfig(
       http: HttpConfig,
       health: HttpConfig,
-      zookeeper: ZookeeperConfig,
-      registration: Registration,
       postgres: PostgresConfig,
-      vault: VaultConfig,
-  )
-
-  final case class Registration(
-      path: String,
-      name: String,
-      `type`: String
+      vault: VaultConfig
   )
 
   final case class HttpConfig(
@@ -37,10 +29,6 @@ private[config] object Configurations {
       postgresCredsPath: String,
       leaseDuration: FiniteDuration,
       leaseRenewWait: FiniteDuration
-  )
-
-  final case class ZookeeperConfig(
-      quorum: String
   )
 
 }

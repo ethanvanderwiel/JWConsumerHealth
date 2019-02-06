@@ -13,7 +13,6 @@ val logbackClassicV = "1.2.3"
 val logstashEncoderV = "4.11"
 // Banno
 val vault4sV = "3.14.0"
-val zookeeperV = "1.24.0"
 val simpleHealthV = "0.6.0"
 
 lazy val `template-service` =
@@ -38,7 +37,6 @@ lazy val commonSettings = Seq(
   addCompilerPlugin("com.olegpy"     %% "better-monadic-for" % "0.2.4"),
   libraryDependencies ++= Seq(
     "com.banno"                  %% "vault4s"                   % vault4sV,
-    "com.banno"                  %% "zookeeper-http4s"          % zookeeperV,
     "com.banno"                  %% "simple-health-prometheus"  % simpleHealthV,
     "org.typelevel"              %% "cats-core"                 % catsV,
     "org.typelevel"              %% "cats-effect"               % catsEffectV,
