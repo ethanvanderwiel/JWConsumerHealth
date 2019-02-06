@@ -17,8 +17,8 @@ object Server {
 
   def serve[F[_]](implicit Effect: Effect[F], EC: ExecutionContext): Stream[F, StreamApp.ExitCode] =
     for {
-      Scheduler <- Scheduler(2)
-      configService <- ConfigService.impl[F](Effect /*, Scheduler, EC*/ )
+      scheduler <- Scheduler(2)
+      configService <- ConfigService.impl[F](Effect /*, scheduler, EC*/ )
       _ = configService.httpClient // TODO: Use HttpClient
       _ <- configService.serviceDiscovery // TODO: Use Service Discovery
       // _ <- configService.transactor // TODO: Use Transactor

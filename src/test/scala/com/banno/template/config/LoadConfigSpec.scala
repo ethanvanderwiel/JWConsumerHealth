@@ -1,7 +1,7 @@
 package com.banno.template.config
 
-import org.specs2.mutable.Specification
 import cats.effect.IO
+import org.specs2.mutable.Specification
 
 class ConfigSpec extends Specification {
 
