@@ -4,7 +4,6 @@ import cats.effect._
 import fs2._
 // import com.banno.template.migrations.Migrations
 import doobie.util.transactor.Transactor
-import java.net.InetAddress
 // import scala.concurrent.ExecutionContext
 import org.http4s.client.Client
 import org.http4s.client.blaze.Http1Client
@@ -24,9 +23,6 @@ object ConfigService {
     for {
       initConfig <- Stream.eval(SetupConfig.loadConfig[F])
       client <- Http1Client.stream[F]()
-      hostname <- Stream.eval(Sync[F].delay {
-        sys.env.get("HOST").orElse(sys.env.get("HOSTNAME")).getOrElse(InetAddress.getLocalHost.getHostName)
-      })
       // Uncomment the Below To Fetch Dynamic Credentials
       // updatedDbConfig <- SetupConfig.loadPostgresConfig[F](initConfig.postgres, initConfig.vault)(Effect, client, S, ec)
     } yield
