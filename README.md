@@ -24,7 +24,6 @@ This service is the minimum requirements for getting a service deployed on marat
 1. Refer to [Marathon configuration setup docs](https://github.com/Banno/environments/blob/master/docs/marathon-app-setup.md) for setting up your app in the environments repo. For the version, use the first release version created in the above steps.
 1. Your app should be deployed.
 1. Make sure everything locally in your project is committed and pushed to the repository.
-1. As your application is deployed through the environments you can [add nagios checks](https://github.com/banno/nagios-config#adding-checks-for-a-new-service) to be notified when the app is unhealthy.
 1. If your app needs to use Vault, follow the steps below to [set up Vault in your service](#setting-up-vault-for-your-new-project).
 1. If your app will be using Postgres, follow the steps below to [set up Postgres in your service](#setting-up-postgres-for-your-new-project).
 
