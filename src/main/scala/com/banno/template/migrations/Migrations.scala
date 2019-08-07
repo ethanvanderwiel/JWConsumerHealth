@@ -1,4 +1,4 @@
-package com.banno.template.migrations
+package com.banno.jabberwocky.consumer.health.migrations
 
 import cats.implicits._
 import cats.effect.Sync

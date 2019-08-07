@@ -15,13 +15,13 @@ val logstashEncoderV = "4.11"
 val vault4sV = "3.14.0"
 val simpleHealthV = "0.6.0"
 
-lazy val `template-service` =
+lazy val `jw-consumer-health` =
   project
     .in(file("."))
     .enablePlugins(BannoDockerPlugin)
     .settings(commonSettings)
     .settings(
-      name := "template-service",
+      name := "jw-consumer-health",
       scalafmtOnCompile in ThisBuild := true,
       scalafmtTestOnCompile in ThisBuild := true
     )

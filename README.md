@@ -15,9 +15,9 @@ This service is the minimum requirements for getting a service deployed on marat
 #### Deploying your service
 
 1. Copy this repository.
-1. Find/replace all occurences of `template-service` with your app's name.
-1. Find/replace all occurences of `com.banno.template` with whatever you want your package named.
-1. Verify that `template-service`, `template`, and `aviato` don't exist anywhere in your project.
+1. Find/replace all occurences of `jw-consumer-health` with your app's name.
+1. Find/replace all occurences of `com.banno.jabberwocky.consumer.health` with whatever you want your package named.
+1. Verify that `jw-consumer-health`, `template`, and `aviato` don't exist anywhere in your project.
 1. Create a new repository on github and push up your project.
 1. Follow the steps below to [set up Jenkins for your new project](#setting-up-jenkins-for-your-new-project).
 1. Your app should have its first release.
@@ -32,7 +32,7 @@ This service is the minimum requirements for getting a service deployed on marat
 1. Go to Jenkins and click `New Item` at the top-left. (You must be logged in)
 1. On the new page, type in the name of your new service. Do **_not_** click `OK` yet.
 ![Alt text](https://user-images.githubusercontent.com/3231194/27773261-5332a966-5f3b-11e7-8a51-aea095c9d1c8.png)
-1. Go to the bottom and in the `copy from` field, find `template-service`. Click `OK`.
+1. Go to the bottom and in the `copy from` field, find `jw-consumer-health`. Click `OK`.
 ![Alt text](https://user-images.githubusercontent.com/3231194/27773262-533d2594-5f3b-11e7-9b48-e8fc755455e8.png)
 1. After clicking `OK`, find your `Repository` in the `Github` section.
 ![Alt text](https://user-images.githubusercontent.com/3231194/27773258-53307bb4-5f3b-11e7-86d7-c320382ec358.png)

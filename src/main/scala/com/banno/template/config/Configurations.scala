@@ -1,4 +1,4 @@
-package com.banno.template.config
+package com.banno.jabberwocky.consumer.health.config
 
 import scala.concurrent.duration._
 

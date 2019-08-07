@@ -1,4 +1,4 @@
-package com.banno.template
+package com.banno.jabberwocky.consumer.health
 
 import cats.effect.IO
 import fs2.StreamApp

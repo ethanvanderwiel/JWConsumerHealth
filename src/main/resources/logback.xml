@@ -12,7 +12,7 @@
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
             <customFields>
                 {
-                "app_name":"template-service",
+                "app_name":"jw-consumer-health",
                 "env" : {
                 "mesos_task_id": "${MESOS_TASK_ID}",
                 "marathon_app_id": "${MARATHON_APP_ID}",

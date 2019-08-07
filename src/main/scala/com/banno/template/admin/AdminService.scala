@@ -1,4 +1,4 @@
-package com.banno.template.admin
+package com.banno.jabberwocky.consumer.health.admin
 
 import cats._
 import cats.implicits._
@@ -56,7 +56,7 @@ object AdminService {
       basicAvailablility[F]
     )
     def basicAvailablility[F[_]: Applicative]: HealthCheck[F] = HealthCheck[F]("service-is-up", true.pure[F])
-    // def database[F[_]: Monad](xa: Transactor[F]) = DbChecks.postgresHealthCheck[F]("template-service database is healthy", xa)
+    // def database[F[_]: Monad](xa: Transactor[F]) = DbChecks.postgresHealthCheck[F]("jw-consumer-health database is healthy", xa)
 
   }
 }

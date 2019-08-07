@@ -1,11 +1,11 @@
-package com.banno.template
+package com.banno.jabberwocky.consumer.health
 
 import fs2._
 import cats.effect._
 import cats.implicits._
-import com.banno.template.admin.AdminService
-import com.banno.template.admin.AdminService.AdminServiceExports
-import com.banno.template.config.ConfigService
+import com.banno.jabberwocky.consumer.health.admin.AdminService
+import com.banno.jabberwocky.consumer.health.admin.AdminService.AdminServiceExports
+import com.banno.jabberwocky.consumer.health.config.ConfigService
 import _root_.io.prometheus.client.CollectorRegistry
 import org.http4s.server.prometheus.{PrometheusExportService, PrometheusMetrics}
 
@@ -36,7 +36,7 @@ object Server {
           .serve
       ).join(2)
         .concurrently(
-          Stream.eval(Effect.delay(logger.info("template-service has started")))
+          Stream.eval(Effect.delay(logger.info("jw-consumer-health has started")))
         )
 
     } yield exitCode

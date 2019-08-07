@@ -1,1 +1,1 @@
-set role "template-service";
+set role "jw-consumer-health";

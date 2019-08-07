@@ -1,4 +1,4 @@
-package com.banno.template.config
+package com.banno.jabberwocky.consumer.health.config
 
 import fs2.{Scheduler, Stream}
 import cats.implicits._
@@ -22,7 +22,7 @@ private[config] object SetupConfig {
 
   def loadConfig[F[_]](implicit F: Sync[F]): F[ServiceConfig] = F.delay {
     val config = ConfigFactory.load()
-    pureconfig.loadConfigOrThrow[ServiceConfig](config, "com.banno.template")
+    pureconfig.loadConfigOrThrow[ServiceConfig](config, "com.banno.jabberwocky.consumer.health")
   }
 
   def loadPostgresConfig[F[_]](dbConfig: PostgresConfig, v: VaultConfig)(

@@ -1,4 +1,4 @@
-package com.banno.template.config
+package com.banno.jabberwocky.consumer.health.config
 
 import cats.effect.IO
 import org.specs2.mutable.Specification

@@ -1,8 +1,8 @@
-package com.banno.template.config
+package com.banno.jabberwocky.consumer.health.config
 
 import cats.effect._
 import fs2._
-// import com.banno.template.migrations.Migrations
+// import com.banno.jabberwocky.consumer.health.migrations.Migrations
 import doobie.util.transactor.Transactor
 // import scala.concurrent.ExecutionContext
 import org.http4s.client.Client
